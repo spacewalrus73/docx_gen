@@ -1,5 +1,6 @@
 from core.ui_objects.base.base_attribute import SimpleAttribute
 
+# """Размеры в EMU (English Metric Units)"""
 
 class Height(SimpleAttribute):
     def __init__(self, value: int):
@@ -14,13 +15,33 @@ class Width(SimpleAttribute):
 class CX(SimpleAttribute):
 
     def __init__(self, value: int):
-        """Размеры в EMU (English Metric Units)"""
 
         super().__init__(value=value, xml_name="cx")
 
 
 class CY(SimpleAttribute):
-    """Размеры в EMU (English Metric Units)"""
 
     def __init__(self, value: int):
         super().__init__(value=value, xml_name="cy")
+
+
+class EffectLeft(SimpleAttribute):
+
+    def __init__(self, value: int):
+        super().__init__(value=value, xml_name="l")
+
+
+class EffectTop(SimpleAttribute):
+
+    def __init__(self, value: int):
+        super().__init__(value=value, xml_name="t")
+
+
+class EffectRight(SimpleAttribute):
+    def __init__(self, value: int):
+        super().__init__(value=value, xml_name="r")
+
+
+class EffectBottom(SimpleAttribute):
+    def __init__(self, value: int):
+        super().__init__(value=value, xml_name="b")
