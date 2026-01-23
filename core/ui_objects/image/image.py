@@ -6,6 +6,9 @@ from core.ui_objects.atrib.ids import AnchorId, EditId
 import uuid
 from core.utils.metrics import Cm
 from core.ui_objects.atrib.size import CX, CY
+from core.ui_objects.atrib.size import EffectLeft, EffectRight, EffectTop, EffectBottom
+from core.ui_objects.atrib.image import ImageName, ImageHidden, ImageDescr, ImageId, \
+    ImageTitle
 
 
 class Inline(BaseContainerTag):
@@ -113,6 +116,7 @@ class Inline(BaseContainerTag):
     def access_property(self) -> list[dict]:
         return []
 
+
 class Extent(BaseContentTag):
     __slots__ = ("_width", "_height")
 
@@ -147,36 +151,124 @@ class Extent(BaseContentTag):
 
     @property
     def tag(self) -> str:
-        return "wp: extent"
+        return "wp:extent"
 
 
-
-
-#todo тут я
 class EffectExtent(BaseContentTag):
-    ""
-    __slots__ = ("_type", "_clear")
+    """Класс для тега <wp:effectExtent>"""
 
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    __slots__ = ("_left", "_top", "_right", "_bottom")
 
-    @property
-    def tag(self) -> str:
-        return "wp: effectExtent"
-
-
-class docPr(BaseContentTag):
-    ""
-    __slots__ = ("_type", "_clear")
-
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    def __init__(self):
+        self._left = EffectLeft(Cm(0))
+        self._top = EffectTop(Cm(0))
+        self._right = EffectRight(Cm(0))
+        self._bottom = EffectBottom(Cm(0))
 
     @property
-    def tag(self) -> str:
-        return "wp: docPr"
+    def left(self):
+        return self._left
+
+    @left.setter
+    def left(self, value):
+        self._left.value = Cm(value)
+
+    @property
+    def top(self):
+        return self._top
+
+    @top.setter
+    def top(self, value):
+        self._top.value = Cm(value)
+
+    @property
+    def right(self):
+        return self._right
+
+    @right.setter
+    def right(self, value):
+        self._right.value = Cm(value)
+
+    @property
+    def bottom(self):
+        return self._bottom
+
+    @bottom.setter
+    def bottom(self, value):
+        self._bottom.value = Cm(value)
+
+    @property
+    def tag(self):
+        return "wp:effectExtent"
+
+
+class DocProperties(BaseContentTag):
+    """Класс для тега <wp:docPr> (Document Properties)"""
+    __slots__ = ("_id", "_name", "_description", "_title", "_hidden")
+
+    def __init__(self):
+        self._id = ImageId(0)
+        self._name = ImageName("")
+        self._description = ImageDescr("")
+        self._title = ImageTitle("")
+        self._hidden = ImageHidden("0")
+
+    @property
+    def id(self) -> int:
+        """Уникальный идентификатор объекта"""
+        return self._id.value
+
+    @id.setter
+    def id(self, value: int):
+        if not isinstance(value, int) or value < 1:
+            raise ValueError("ID должен быть положительным целым числом")
+        self._id.value = value
+
+    @property
+    def name(self) -> str:
+        """Отображаемое имя объекта"""
+        return self._name.value
+
+    @name.setter
+    def name(self, value: str):
+        self._name.value = str(value)
+
+    @property
+    def description(self) -> str:
+        """Описание объекта (альтернативный текст)"""
+        return self._description.value
+
+    @description.setter
+    def description(self, value: str):
+        self._description.value = str(value)
+
+    @property
+    def title(self) -> str:
+        """Заголовок (всплывающая подсказка)"""
+        return self._title.value
+
+    @title.setter
+    def title(self, value: str):
+        self._title.value = str(value)
+
+    @property
+    def hidden(self) -> bool:
+        """Скрыт ли объект?"""
+        return self._hidden.value
+
+    @hidden.setter
+    def hidden(self, value: bool):
+        self._hidden.value = "1" if value else "0"
+
+    @property
+    def tag(self):
+        return "wp:docPr"
+
+    def __str__(self):
+        return f"DocPr(id={self.id}, name='{self.name}')"
+
+
+# todo тут я
 
 
 class cNvGraphicFramePr(BaseContainerTag):
