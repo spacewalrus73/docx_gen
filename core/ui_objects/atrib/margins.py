@@ -29,3 +29,23 @@ class Space(SimpleAttribute):
 class LinePitch(SimpleAttribute):
     def __init__(self, value: int):
         super().__init__(value=value, xml_name="w:linePitch")
+
+
+class DistTop(SimpleAttribute):
+    def __init__(self, value: int):
+        super().__init__(value=value, xml_name="distT")
+
+
+class DistLeft(SimpleAttribute):
+    def __init__(self, value: int):
+        super().__init__(value=value, xml_name="distL")
+
+
+class DistRight(SimpleAttribute):
+    def __init__(self, value: int):
+        super().__init__(value=value, xml_name="distR")
+
+
+class DistBottom(SimpleAttribute):
+    def __init__(self, value: int):
+        super().__init__(value=value, xml_name="distB")
