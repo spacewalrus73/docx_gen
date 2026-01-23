@@ -17,6 +17,7 @@ class Table(BaseContainerTag):
 
 
 class TableProperty(BaseContainerTag):
+    @property
     def tag(self):
         return "w:tblPr"
 
@@ -30,4 +31,26 @@ class TableProperty(BaseContainerTag):
 
 
 class TableGrid(BaseContainerTag):
+    pass
+
+
+class TableRowProperty(BaseContainerTag):
+    pass
+
+
+class TableRow(BaseContainerTag):
+    @property
+    def tag(self):
+        return "w:tr"
+
+    @property
+    def access_children(self) -> list[dict]:
+        return [{"class": TableCell}]
+
+    @property
+    def access_property(self) -> list[dict]:
+        return [{"class": TableRowProperty, "required_position": 0}]
+
+
+class TableCell:
     pass

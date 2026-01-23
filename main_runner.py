@@ -1,16 +1,23 @@
 from core.ui_objects.document import Document
 from core.ui_objects.paragraph import Paragraph
 from core.ui_objects import Section
+from core.writer.recording_tools import create_docx2
 
-s = Section()
-s.change_page_size(width=12240, height=15840)
-# print(s.property)
-doc = Document()
-# print(str(doc.get_section()))
-# print(doc.get_section().property)
-doc.objects[0].objects[0] = s
-p = Paragraph()
-p.add_text("iysdfasdfasdfasdfgg")
-doc.objects[0].objects[0].add(p)
-doc.save(r"test.docx")
-#
+xml = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:tbl>
+      <w:tr>
+        <w:tc>
+          <w:p>
+            <w:r>
+              <w:t>X</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+  </w:body>
+</w:document>"""
+
+create_docx2(xml, "t.docx")

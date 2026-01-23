@@ -29,13 +29,9 @@ class Body(BaseContainerTag):
 
 
 class Document(BaseContainerTag):
-    __slots__ = ('_ignorable',)
+    __slots__ = ("_ignorable",)
 
-    def __init__(
-            self,
-            path: str = None,
-            objects: Objects | list = None
-    ):
+    def __init__(self, path: str = None, objects: Objects | list = None):
         super().__init__(objects)
         if not path:
             path = DOC_DEFAULT_PATH
@@ -64,6 +60,7 @@ class Document(BaseContainerTag):
 
     def open(self, file: str | IO[bytes]):
         from core.oxml_magic.parser import parse_document
+
         self.add(parse_document(file))
 
     def save(self, file_path: str):
