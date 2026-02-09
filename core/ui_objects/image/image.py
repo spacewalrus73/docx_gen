@@ -7,8 +7,35 @@ import uuid
 from core.utils.metrics import Cm
 from core.ui_objects.atrib.size import CX, CY
 from core.ui_objects.atrib.size import EffectLeft, EffectRight, EffectTop, EffectBottom
-from core.ui_objects.atrib.image import ImageName, ImageHidden, ImageDescr, ImageId, \
+from core.ui_objects.atrib.image.image import (
+    ImageName,
+    ImageHidden,
+    ImageDescr,
+    ImageId,
     ImageTitle
+)
+from core.ui_objects.atrib.image.graphic_frame_locks import (
+    NoChangeAspect,
+    NoChangeArrowheads,
+    NoEditPoints,
+    NoAdjustHandles,
+    NoChangeShapeType,
+    NoChangeStart,
+    NoChangeEnd,
+    NoMove,
+    NoResize,
+    NoRotate,
+    NoSelect,
+    NoCrop,
+    NoChangeBullet,
+    NoGrp,
+    NoUngrp,
+    NoDrilldown,
+    NoTextEdit,
+    GraphicFrameLocksNS,
+)
+from core.ui_objects.atrib.image.image import URIGraphicData
+
 
 
 class Inline(BaseContainerTag):
@@ -268,18 +295,19 @@ class DocProperties(BaseContentTag):
         return f"DocPr(id={self.id}, name='{self.name}')"
 
 
-# todo тут я
-
-
-class cNvGraphicFramePr(BaseContainerTag):
-    ""
+class CNvGraphicFramePr(BaseContainerTag):
+    """
+    Non-Visual Properties for a Graphic Frame
+    Содержит свойства, которые не влияют на отображение графического фрейма
+    """
+    __slots__ = ()
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
 
     @property
     def tag(self):
-        return "wp: cNvGraphicFramePr"
+        return "wp:cNvGraphicFramePr"
 
     @property
     def access_children(self):
@@ -291,20 +319,242 @@ class cNvGraphicFramePr(BaseContainerTag):
 
 
 class GraphicFrameLocks(BaseContentTag):
-    ""
-    __slots__ = ("_type", "_clear")
+    """
+    DrawingML Graphic Frame Locks
+    Блокировки для графического фрейма
+    """
+    __slots__ = (
+        "_no_change_aspect", "_no_change_arrowheads",
+        "_no_change_start", "_no_change_end", "_no_edit_points",
+        "_no_adjust_handles", "_no_change_shape_type", "_no_move",
+        "_no_resize", "_no_rotate", "_no_select", "_no_crop", "_no_change_bullet",
+        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit"
+    )
 
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    def __init__(self):
+        """Блокировка изменения пропорций (1 = да, 0 = нет)"""
+
+        self.no_change_aspect = NoChangeAspect("0")
+        self.no_change_arrowheads = NoChangeArrowheads("0")
+        self.no_change_start = NoChangeStart("0")
+        self.no_change_end = NoChangeEnd("0")
+        self.no_edit_points = NoEditPoints("0")
+        self.no_adjust_handles = NoAdjustHandles("0")
+        self.no_change_shape_type = NoChangeShapeType("0")
+        self.no_change_shape_type = NoChangeShapeType("0")
+        self.no_move = NoMove("0")
+        self.no_resize = NoResize("0")
+        self.no_rotate = NoRotate("0")
+        self.no_select = NoSelect("0")
+        self.no_crop = NoCrop("0")
+        self.no_change_bullet = NoChangeBullet("0")
+        self.no_grp = NoGrp("0")
+        self.no_ungrp = NoUngrp("0")
+        self.no_drill_down = NoDrilldown("0")
+        self.no_text_edit = NoTextEdit("0")
+        self.xmlns = GraphicFrameLocksNS("")
+
+    @property
+    def no_change_aspect(self):
+        return self._no_change_aspect.value
+
+    @no_change_aspect.setter
+    def no_change_aspect(self, value: bool):
+        self._no_change_aspect.value = "1" if value else "0"
+
+    @property
+    def no_change_arrowheads(self):
+        return self._no_change_arrowheads.value
+
+    @no_change_arrowheads.setter
+    def no_change_arrowheads(self, value: bool):
+        self._no_change_arrowheads.value = "1" if value else "0"
+
+    @property
+    def no_change_start(self):
+        """Блокировка изменения начальной точки"""
+        return self._no_change_start.value
+
+    @no_change_start.setter
+    def no_change_start(self, value: bool):
+        self._no_change_start.value = "1" if value else "0"
+
+    @property
+    def no_change_end(self):
+        """Блокировка изменения конечной точки"""
+        return self._no_change_end.value
+
+    @no_change_end.setter
+    def no_change_end(self, value: bool):
+        self._no_change_end.value = "1" if value else "0"
+
+    @property
+    def no_edit_points(self):
+        """Запрет редактирования точек"""
+        return self._no_edit_points.value
+
+    @no_edit_points.setter
+    def no_edit_points(self, value: bool):
+        self._no_edit_points.value = "1" if value else "0"
+
+    @property
+    def no_adjust_handles(self):
+        """Запрет изменения ручек настройки"""
+        return self._no_adjust_handles
+
+    @no_adjust_handles.setter
+    def no_adjust_handles(self, value: bool):
+        self._no_adjust_handles.value = "1" if value else "0"
+
+    @property
+    def no_change_shape_type(self):
+        """Запрет изменения типа фигуры"""
+        return self._no_change_shape_type.value
+
+    @no_change_shape_type.setter
+    def no_change_shape_type(self, value: bool):
+        self._no_change_shape_type.value = "1" if value else "0"
+
+    @property
+    def no_move(self):
+        """Запрет перемещения"""
+        return self._no_move.value
+
+    @no_move.setter
+    def no_move(self, value: bool):
+        self._no_move.value = "1" if value else "0"
+
+    @property
+    def no_resize(self):
+        """Запрет изменения размера"""
+        return self._no_resize.value
+
+    @no_resize.setter
+    def no_resize(self, value: bool):
+        self._no_resize.value = "1" if value else "0"
+
+    @property
+    def no_rotate(self):
+        """Запрет вращения"""
+        return self._no_rotate.value
+
+    @no_rotate.setter
+    def no_rotate(self, value: bool):
+        self._no_rotate.value = "1" if value else "0"
+
+    @property
+    def no_select(self):
+        """Запрет выделения"""
+        return self._no_select.value
+
+    @no_select.setter
+    def no_select(self, value: bool):
+        self._no_select.value = "1" if value else "0"
+
+    @property
+    def no_crop(self):
+        """Запрет обрезки"""
+        return self._no_crop.value
+
+    @no_crop.setter
+    def no_crop(self, value: bool):
+        self._no_crop.value = "1" if value else "0"
+
+    @property
+    def no_change_bullet(self):
+        """Запрет обрезки"""
+        return self._no_change_bullet.value
+
+    @no_change_bullet.setter
+    def no_change_bullet(self, value: bool):
+        self._no_change_bullet.value = "1" if value else "0"
+
+    @property
+    def no_grp(self):
+        """Запрет обрезки"""
+        return self._no_grp.value
+
+    @no_grp.setter
+    def no_grp(self, value: bool):
+        self._no_grp.value = "1" if value else "0"
+
+    @property
+    def no_ungrp(self):
+        """Запрет обрезки"""
+        return self._no_ungrp.value
+
+    @no_ungrp.setter
+    def no_ungrp(self, value: bool):
+        self._no_ungrp.value = "1" if value else "0"
+
+    @property
+    def no_drill_down(self):
+        """Запрет обрезки"""
+        return self._no_drill_down.value
+
+    @no_drill_down.setter
+    def no_drill_down(self, value: bool):
+        self._no_drill_down.value = "1" if value else "0"
+
+    @property
+    def no_text_edit(self):
+        """Запрет обрезки"""
+        return self._no_text_edit.value
+
+    @no_text_edit.setter
+    def no_text_edit(self, value: bool):
+        self._no_text_edit.value = "1" if value else "0"
+
+    @property
+    def xmlns(self):
+        """Запрет обрезки"""
+        return self._xmlns.value
+
+    @xmlns.setter
+    def xmlns(self, value: str):
+        self._xmlns.value = value
 
     @property
     def tag(self) -> str:
         return "a:graphicFrameLocks"
 
+    def lock_all(self):
+        """Заблокировать все изменения"""
+        self.no_change_aspect.value = 1
+        self.no_change_arrowheads.value = 1
+        self.no_change_start.value = 1
+        self.no_change_end.value = 1
+        self.no_edit_points.value = 1
+        self.no_adjust_handles.value = 1
+        self.no_change_shape_type.value = 1
+        self.no_move.value = 1
+        self.no_resize.value = 1
+        self.no_rotate.value = 1
+        self.no_select.value = 1
+        self.no_crop.value = 1
+
+    def unlock_all(self):
+        """Разблокировать все изменения"""
+        self.no_change_aspect.value = 0
+        self.no_change_arrowheads.value = 0
+        self.no_change_start.value = 0
+        self.no_change_end.value = 0
+        self.no_edit_points.value = 0
+        self.no_adjust_handles.value = 0
+        self.no_change_shape_type.value = 0
+        self.no_move.value = 0
+        self.no_resize.value = 0
+        self.no_rotate.value = 0
+        self.no_select.value = 0
+        self.no_crop.value = 0
+
 
 class Graphic(BaseContainerTag):
-    ""
+    """
+    DrawingML Graphic element
+    Основной контейнер для графических данных
+    """
+    __slots__ = ()
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
@@ -323,10 +573,26 @@ class Graphic(BaseContainerTag):
 
 
 class GraphicData(BaseContainerTag):
-    ""
+    """
+    DrawingML Graphic Data element
+    Содержит графические данные с указанием типа
+    """
+    __slots__ = ("_uri",)
 
-    def __init__(self, objects: Objects | list = None):
+    def __init__(self, objects: Objects | list = None, uri: str = None):
         super().__init__(objects)
+        self._uri = URIGraphicData(URIGraphicData.Options.pic.value)
+
+    # ----- Свойства -----
+
+    @property
+    def uri(self) -> str:
+        """URI типа графических данных"""
+        return self._uri.value
+
+    @uri.setter
+    def uri(self, value: str):
+        self._uri = str(value)
 
     @property
     def tag(self):
@@ -338,8 +604,12 @@ class GraphicData(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
+        """Генерация XML атрибутов"""
+        if self._uri:
+            return [{"uri": self._uri}]
         return []
 
+# todo тут я
 
 class Pic(BaseContainerTag):
     "pic:pic"
