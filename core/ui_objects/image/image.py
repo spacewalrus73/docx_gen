@@ -7,6 +7,7 @@ import uuid
 from core.utils.metrics import Cm
 from core.ui_objects.atrib.size import CX, CY
 from core.ui_objects.atrib.size import EffectLeft, EffectRight, EffectTop, EffectBottom
+from core.ui_objects.atrib.image.xfrm import OffX, OffY, ExtCx, ExtCy, Rot, FlipH, FlipV
 from core.ui_objects.atrib.image.image import (
     ImageName,
     ImageHidden,
@@ -344,7 +345,7 @@ class GraphicFrameLocks(BaseContentTag):
         "_no_change_start", "_no_change_end", "_no_edit_points",
         "_no_adjust_handles", "_no_change_shape_type", "_no_move",
         "_no_resize", "_no_rotate", "_no_select", "_no_crop", "_no_change_bullet",
-        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit","_xmlns"
+        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit", "_xmlns"
     )
 
     def __init__(self):
@@ -984,10 +985,9 @@ class PicLocks(BaseContentTag):
         return "a:picLocks"
 
 
-
 class BlipFill(BaseContainerTag):
     """pic:blipFill"""
-    __slots__ = ("_dpi", )
+    __slots__ = ("_dpi",)
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
@@ -1155,7 +1155,6 @@ class Blip(BaseContainerTag):
     def blue(self, value: int):
         self._blue.value = str(value)
 
-
     # ========== МОДИФИКАТОРЫ ЦВЕТОВ ==========
 
     @property
@@ -1294,7 +1293,6 @@ class Blip(BaseContainerTag):
     def bu_clr_tx(self, value: str):
         self._bu_clr_tx.value = value
 
-
     @property
     def tag(self):
         return "a:blip"
@@ -1332,6 +1330,7 @@ class Blip(BaseContainerTag):
         """Выключить оттенки серого"""
         self._gray.value = "0"
 
+
 class ExtLst(BaseContainerTag):
     """a:extLst - список расширений для элементов Office Open XML"""
 
@@ -1368,7 +1367,6 @@ class Ext(BaseContainerTag):
     def uri(self, value: str):
         self._uri.value = value
 
-
     @property
     def tag(self):
         return "a:ext"
@@ -1380,6 +1378,7 @@ class Ext(BaseContainerTag):
     @property
     def access_property(self) -> list[dict]:
         return []
+
 
 class UseLocalDpi(BaseContentTag):
     """a14:useLocalDpi - использовать локальный DPI (Office 2010+)"""
@@ -1481,9 +1480,10 @@ class FillRect(BaseContentTag):
     def tag(self) -> str:
         return "a:fillRect"
 
-#todo я тут
+
+# todo я тут
 class SpPr(BaseContainerTag):
-    ""
+    """pic:spPr - свойства фигуры (обводка, заливка, эффекты)"""
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
@@ -1502,10 +1502,87 @@ class SpPr(BaseContainerTag):
 
 
 class Xfrm(BaseContainerTag):
-    ""
+    """a:xfrm - трансформации фигуры (позиция, размер, вращение)"""
+    __slots__ = ("_off_x", "_off_y", "_ext_cx", "_ext_cy",
+                 "_rot", "_flip_h", "_flip_v")
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
+        # Позиция (offset)
+        self._off_x = OffX("0")
+        self._off_y = OffY("0")
+
+        # Размер (extent)
+        self._ext_cx = ExtCx("0")
+        self._ext_cy = ExtCy("0")
+
+        # Вращение и отражение
+        self._rot = Rot("")  # Опционально
+        self._flip_h = FlipH(FlipH.Options.no_flip.value)
+        self._flip_v = FlipV(FlipV.Options.no_flip.value)
+
+    @property
+    def off_x(self) -> str:
+        """Позиция X (в EMU)"""
+        return str(self._off_x.value)
+
+    @off_x.setter
+    def off_x(self, value: int):
+        self._off_x.value = str(value)
+
+    @property
+    def off_y(self) -> str:
+        """Позиция Y (в EMU)"""
+        return str(self._off_y.value)
+
+    @off_y.setter
+    def off_y(self, value: int):
+        self._off_y.value = str(value)
+
+    @property
+    def ext_cx(self) -> str:
+        """Ширина (в EMU)"""
+        return str(self._ext_cx.value)
+
+    @ext_cx.setter
+    def ext_cx(self, value: int):
+        self._ext_cx.value = str(value)
+
+    @property
+    def ext_cy(self) -> str:
+        """Высота (в EMU)"""
+        return str(self._ext_cy.value)
+
+    @ext_cy.setter
+    def ext_cy(self, value: int):
+        self._ext_cy.value = str(value)
+
+    @property
+    def rot(self) -> str:
+        """Угол вращения (в 60000-х долях градуса)"""
+        return str(self._rot.value)
+
+    @rot.setter
+    def rot(self, value: int):
+        self._rot.value = str(value)
+
+    @property
+    def flip_h(self) -> str:
+        """Отражение по горизонтали"""
+        return str(self._flip_h.value)
+
+    @flip_h.setter
+    def flip_h(self, value: bool):
+        self._flip_h.value = "1" if value else "0"
+
+    @property
+    def flip_v(self) -> str:
+        """Отражение по вертикали"""
+        return str(self._flip_v.value)
+
+    @flip_v.setter
+    def flip_v(self, value: bool):
+        self._flip_v.value = "1" if value else "0"
 
     @property
     def tag(self):
@@ -1520,6 +1597,7 @@ class Xfrm(BaseContainerTag):
         return []
 
 
+# todo тут
 class Off(BaseContentTag):
     ""
     __slots__ = ("_type", "_clear")
