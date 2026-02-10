@@ -45,3 +45,25 @@ class URIGraphicData(EnumAttribute):
 
     def __init__(self, value: str):
         super().__init__(value=value, xml_name="uri")
+
+
+class URIExt(SimpleAttribute):
+    def __init__(self, value: str = ""):
+        super().__init__(value=value, xml_name="uri")
+
+class Dpi(SimpleAttribute):
+    """DPI для fillRect (0 = использовать системный DPI)"""
+
+    def __init__(self, value: str = "0"):
+        super().__init__(value=value, xml_name="dpi")
+
+
+class UseLocalDpiVal(EnumAttribute):
+    """Значение для useLocalDpi"""
+
+    def __init__(self, value: str = "0"):
+        super().__init__(value=value, xml_name="val")
+
+    class Options(Enum):
+        use_system = "0"  # Использовать системный DPI
+        use_local = "1"  # Использовать локальный DPI из файла
