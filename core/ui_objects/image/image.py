@@ -12,7 +12,11 @@ from core.ui_objects.atrib.image.image import (
     ImageHidden,
     ImageDescr,
     ImageId,
-    ImageTitle
+    ImageTitle,
+    Dpi,
+    URIGraphicData,
+    URIExt,
+    UseLocalDpiVal
 )
 from core.ui_objects.atrib.image.graphic_frame_locks import (
     NoChangeAspect,
@@ -34,13 +38,19 @@ from core.ui_objects.atrib.image.graphic_frame_locks import (
     NoTextEdit,
     GraphicFrameLocksNS,
 )
-from core.ui_objects.atrib.image.image import URIGraphicData
 from core.ui_objects.atrib.image.CNvPr import (
     ObjectName,
     ObjectHidden,
     ObjectId,
     ObjectDescr,
     ObjectTitle
+)
+from core.ui_objects.atrib.image.blip import (
+    Embed, CState, AlphaMod, AlphaModFix,
+    Gain, BlackLevel, Gamma, Gray, Red, Green,
+    GreenMod, BlueMod, Blue, RedMod, Hue,
+    HueMod, Lum, LumMod, Sat, SatMod, Shade,
+    Cont, ContMod, Sharp, Tint, BuClr, BuClrTx
 )
 
 
@@ -334,7 +344,7 @@ class GraphicFrameLocks(BaseContentTag):
         "_no_change_start", "_no_change_end", "_no_edit_points",
         "_no_adjust_handles", "_no_change_shape_type", "_no_move",
         "_no_resize", "_no_rotate", "_no_select", "_no_crop", "_no_change_bullet",
-        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit"
+        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit","_xmlns"
     )
 
     def __init__(self):
@@ -724,8 +734,6 @@ class CNvPr(BaseContentTag):
         return "pic:cNvPr"
 
 
-
-
 class CNvPicPr(BaseContainerTag):
     """
     Non-Visual Picture Properties
@@ -755,7 +763,7 @@ class PicLocks(BaseContentTag):
         "_no_change_start", "_no_change_end", "_no_edit_points",
         "_no_adjust_handles", "_no_change_shape_type", "_no_move",
         "_no_resize", "_no_rotate", "_no_select", "_no_crop", "_no_change_bullet",
-        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit"
+        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit", "_xmlns"
     )
 
     def __init__(self):
@@ -941,7 +949,6 @@ class PicLocks(BaseContentTag):
     def xmlns(self, value: str):
         self._xmlns.value = value
 
-
     def lock_all(self):
         """Заблокировать все изменения"""
         self.no_change_aspect.value = 1
@@ -976,13 +983,24 @@ class PicLocks(BaseContentTag):
     def tag(self) -> str:
         return "a:picLocks"
 
-# todo тут я
+
 
 class BlipFill(BaseContainerTag):
-    "pic:blipFill"
+    """pic:blipFill"""
+    __slots__ = ("_dpi", )
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
+        self._dpi = Dpi("0")  # По умолчанию 0
+
+    @property
+    def dpi(self) -> str:
+        """DPI для fillRect (0 = использовать системный DPI)"""
+        return str(self._dpi.value)
+
+    @dpi.setter
+    def dpi(self, value: int):
+        self._dpi.value = str(value)
 
     @property
     def tag(self):
@@ -998,10 +1016,284 @@ class BlipFill(BaseContainerTag):
 
 
 class Blip(BaseContainerTag):
-    ""
+    """a:blip - ссылка на изображение с эффектами"""
+    __slots__ = ("_objects", "_property", "_embed", "_cstate", "_alpha_mod",
+                 "_alpha_mod_fix", "_gain", "_black_level", "_gamma", "_gray",
+                 "_red", "_green", "_blue", "_red_mod", "_green_mod", "_blue_mod",
+                 "_hue", "_hue_mod", "_lum", "_lum_mod", "_sat", "_sat_mod",
+                 "_shade", "_cont", "_cont_mod", "_sharp", "_tint", "_bu_clr",
+                 "_bu_clr_tx")
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
+
+        # Инициализация атрибутов
+        self._embed = Embed("")
+        self._cstate = CState("print")  # print, screen, hq, always
+        self._alpha_mod = AlphaMod("100000")
+        self._alpha_mod_fix = AlphaModFix(None)  # Опционально
+        self._gain = Gain("0")
+        self._black_level = BlackLevel("0")
+        self._gamma = Gamma("0")
+        self._gray = Gray("0")
+        self._red = Red("0")
+        self._green = Green("0")
+        self._blue = Blue("0")
+        self._red_mod = RedMod("100000")
+        self._green_mod = GreenMod("100000")
+        self._blue_mod = BlueMod("100000")
+        self._hue = Hue("0")
+        self._hue_mod = HueMod("100000")
+        self._lum = Lum("0")
+        self._lum_mod = LumMod("100000")
+        self._sat = Sat("0")
+        self._sat_mod = SatMod("100000")
+        self._shade = Shade("0")
+        self._cont = Cont("0")
+        self._cont_mod = ContMod("100000")
+        self._sharp = Sharp("0")
+        self._tint = Tint("0")
+        self._bu_clr = BuClr("")  # Опционально
+        self._bu_clr_tx = BuClrTx("")  # Опционально
+
+    # ========== ОСНОВНЫЕ АТРИБУТЫ ==========
+
+    @property
+    def embed(self) -> str:
+        return self._embed.value
+
+    @embed.setter
+    def embed(self, value: str):
+        self._embed.value = str(value)
+
+    @property
+    def cstate(self) -> str:
+        return self._cstate.value
+
+    @cstate.setter
+    def cstate(self, value: str):
+        self._cstate.value = value
+
+    # ========== ПРОЗРАЧНОСТЬ ==========
+
+    @property
+    def alpha_mod(self) -> str:
+        return str(self._alpha_mod.value)
+
+    @alpha_mod.setter
+    def alpha_mod(self, value: int):
+        self._alpha_mod.value = str(value)
+
+    @property
+    def alpha_mod_fix(self) -> str:
+        return str(self._alpha_mod_fix.value) if self._alpha_mod_fix.value else ""
+
+    @alpha_mod_fix.setter
+    def alpha_mod_fix(self, value: int):
+        if value is None:
+            self._alpha_mod_fix.value = ''
+        else:
+            self._alpha_mod_fix.value = str(value)
+
+    # ========== ЯРКОСТЬ И КОНТРАСТ ==========
+
+    @property
+    def gain(self) -> str:
+        return str(self._gain.value)
+
+    @gain.setter
+    def gain(self, value: int):
+        self._gain.value = str(value)
+
+    @property
+    def black_level(self) -> str:
+        return str(self._black_level.value)
+
+    @black_level.setter
+    def black_level(self, value: int):
+        self._black_level.value = str(value)
+
+    @property
+    def gamma(self) -> str:
+        return str(self._gamma.value)
+
+    @gamma.setter
+    def gamma(self, value: int):
+        self._gamma.value = str(value)
+
+    @property
+    def gray(self) -> str:
+        return str(self._gray.value)
+
+    @gray.setter
+    def gray(self, value: int):
+        self._gray.value = str(value)
+
+    # ========== ОСНОВНЫЕ ЦВЕТА ==========
+
+    @property
+    def red(self) -> int:
+        return int(self._red.value)
+
+    @red.setter
+    def red(self, value: int):
+        self._red.value = str(value)
+
+    @property
+    def green(self) -> int:
+        return int(self._green.value)
+
+    @green.setter
+    def green(self, value: int):
+        self._green.value = str(value)
+
+    @property
+    def blue(self) -> int:
+        return int(self._blue.value)
+
+    @blue.setter
+    def blue(self, value: int):
+        self._blue.value = str(value)
+
+
+    # ========== МОДИФИКАТОРЫ ЦВЕТОВ ==========
+
+    @property
+    def red_mod(self) -> str:
+        return str(self._red_mod.value)
+
+    @red_mod.setter
+    def red_mod(self, value: int):
+        self._red_mod.value = str(value)
+
+    @property
+    def green_mod(self) -> str:
+        return str(self._green_mod.value)
+
+    @green_mod.setter
+    def green_mod(self, value: int):
+        self._green_mod.value = str(value)
+
+    @property
+    def blue_mod(self) -> str:
+        return str(self._blue_mod.value)
+
+    @blue_mod.setter
+    def blue_mod(self, value: int):
+        self._blue_mod.value = str(value)
+
+    # ========== HSL ==========
+
+    @property
+    def hue(self) -> str:
+        return str(self._hue.value)
+
+    @hue.setter
+    def hue(self, value: int):
+        self._hue.value = str(value)
+
+    @property
+    def hue_mod(self) -> str:
+        return str(self._hue_mod.value)
+
+    @hue_mod.setter
+    def hue_mod(self, value: int):
+        self._hue_mod.value = str(value)
+
+    @property
+    def sat(self) -> str:
+        return str(self._sat.value)
+
+    @sat.setter
+    def sat(self, value: int):
+        self._sat.value = str(value)
+
+    @property
+    def sat_mod(self) -> str:
+        return str(self._sat_mod.value)
+
+    @sat_mod.setter
+    def sat_mod(self, value: int):
+        self._sat_mod.value = str(value)
+
+    @property
+    def lum(self) -> str:
+        return str(self._lum.value)
+
+    @lum.setter
+    def lum(self, value: int):
+        self._lum.value = str(value)
+
+    @property
+    def lum_mod(self) -> str:
+        return str(self._lum_mod.value)
+
+    @lum_mod.setter
+    def lum_mod(self, value: int):
+        self._lum_mod.value = str(value)
+
+    # ========== КОНТРАСТ И РЕЗКОСТЬ ==========
+
+    @property
+    def cont(self) -> str:
+        return str(self._cont.value)
+
+    @cont.setter
+    def cont(self, value: int):
+        self._cont.value = str(value)
+
+    @property
+    def cont_mod(self) -> str:
+        return str(self._cont_mod.value)
+
+    @cont_mod.setter
+    def cont_mod(self, value: int):
+        self._cont_mod.value = str(value)
+
+    @property
+    def sharp(self) -> str:
+        return str(self._sharp.value)
+
+    @sharp.setter
+    def sharp(self, value: int):
+        self._sharp.value = str(value)
+
+    # ========== ДРУГИЕ ЭФФЕКТЫ ==========
+
+    @property
+    def shade(self) -> str:
+        return str(self._shade.value)
+
+    @shade.setter
+    def shade(self, value: int):
+        self._shade.value = str(value)
+
+    @property
+    def tint(self) -> str:
+        return str(self._tint.value)
+
+    @tint.setter
+    def tint(self, value: int):
+        self._tint.value = str(value)
+
+    # ========== ЦВЕТА ЗАЛИВКИ ==========
+
+    @property
+    def bu_clr(self) -> str:
+        return str(self._bu_clr.value)
+
+    @bu_clr.setter
+    def bu_clr(self, value: str):
+        self._bu_clr.value = value
+
+    @property
+    def bu_clr_tx(self) -> str:
+        return self._bu_clr_tx.value
+
+    @bu_clr_tx.setter
+    def bu_clr_tx(self, value: str):
+        self._bu_clr_tx.value = value
+
 
     @property
     def tag(self):
@@ -1015,9 +1307,33 @@ class Blip(BaseContainerTag):
     def access_property(self) -> list[dict]:
         return []
 
+    # ----- Удобные методы -----
+
+    def set_transparency(self, percent: float):
+        """Установить прозрачность в процентах (0-100)"""
+        value = int(percent * 1000)  # 0-100000
+        self._alpha_mod.value = str(value)
+
+    def set_brightness(self, percent: float):
+        """Установить яркость в процентах (-100..100)"""
+        value = int(percent * 1000)  # -100000..100000
+        self._lum.value = str(value)
+
+    def set_contrast(self, percent: float):
+        """Установить контрастность в процентах (-100..100)"""
+        value = int(percent * 1000)
+        self._cont.value = str(value)
+
+    def enable_grayscale(self):
+        """Включить оттенки серого"""
+        self._gray.value = "1"
+
+    def disable_grayscale(self):
+        """Выключить оттенки серого"""
+        self._gray.value = "0"
 
 class ExtLst(BaseContainerTag):
-    ""
+    """a:extLst - список расширений для элементов Office Open XML"""
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
@@ -1036,10 +1352,22 @@ class ExtLst(BaseContainerTag):
 
 
 class Ext(BaseContainerTag):
-    ""
+    """a:ext - отдельное расширение с уникальным URI"""
+
+    __slots__ = ("_uri",)
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
+        self._uri = URIExt("")
+
+    @property
+    def uri(self) -> str:
+        return self._uri.value
+
+    @uri.setter
+    def uri(self, value: str):
+        self._uri.value = value
+
 
     @property
     def tag(self):
@@ -1053,13 +1381,22 @@ class Ext(BaseContainerTag):
     def access_property(self) -> list[dict]:
         return []
 
-
 class UseLocalDpi(BaseContentTag):
-    __slots__ = ("_type", "_clear")
+    """a14:useLocalDpi - использовать локальный DPI (Office 2010+)"""
 
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    __slots__ = ("_val",)
+
+    def __init__(self):
+        self._val = UseLocalDpiVal(UseLocalDpiVal.Options.use_system.value)
+
+    @property
+    def val(self) -> str:
+        """Значение атрибута val"""
+        return str(self._val.value)
+
+    @val.setter
+    def val(self, value: bool):
+        self._val.value = str(int(value))
 
     @property
     def tag(self) -> str:
@@ -1067,20 +1404,55 @@ class UseLocalDpi(BaseContentTag):
 
 
 class SrcRect(BaseContentTag):
-    "a:srcRect"
-    __slots__ = ("_type", "_clear")
+    """a:srcRect - область обрезки изображения"""
 
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    __slots__ = ("_left", "_top", "_right", "_bottom")
+
+    def __init__(self):
+        self._left = EffectLeft(Cm(0))
+        self._top = EffectTop(Cm(0))
+        self._right = EffectRight(Cm(0))
+        self._bottom = EffectBottom(Cm(0))
 
     @property
-    def tag(self) -> str:
+    def left(self):
+        return int(self._left.value)
+
+    @left.setter
+    def left(self, value: int):
+        self._left.value = str(max(0, min(1000, value)))
+
+    @property
+    def top(self):
+        return str(self._top.value)
+
+    @top.setter
+    def top(self, value: int):
+        self._top.value = str(max(0, min(1000, value)))
+
+    @property
+    def right(self):
+        return str(self._right.value)
+
+    @right.setter
+    def right(self, value: int):
+        self._right.value = str(max(0, min(1000, value)))
+
+    @property
+    def bottom(self):
+        return str(self._bottom.value)
+
+    @bottom.setter
+    def bottom(self, value: int):
+        self._bottom.value = str(max(0, min(1000, value)))
+
+    @property
+    def tag(self):
         return "a:srcRect"
 
 
 class Stretch(BaseContainerTag):
-    ""
+    """a:stretch - растяжение изображения"""
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
@@ -1099,18 +1471,17 @@ class Stretch(BaseContainerTag):
 
 
 class FillRect(BaseContentTag):
-    ""
-    __slots__ = ("_type", "_clear")
+    """a:fillRect - прямоугольник заливки"""
+    __slots__ = ()
 
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    def __init__(self, objects: Objects | list = None):
+        super().__init__(objects)
 
     @property
     def tag(self) -> str:
         return "a:fillRect"
 
-
+#todo я тут
 class SpPr(BaseContainerTag):
     ""
 
