@@ -8,6 +8,10 @@ from core.utils.metrics import Cm
 from core.ui_objects.atrib.size import CX, CY
 from core.ui_objects.atrib.size import EffectLeft, EffectRight, EffectTop, EffectBottom
 from core.ui_objects.atrib.image.xfrm import OffX, OffY, ExtCx, ExtCy, Rot, FlipH, FlipV
+from core.ui_objects.atrib.image.PrstGeom import Prst
+from core.ui_objects.atrib.offset import X, Y
+from core.ui_objects.atrib.image.Ln import LineCap, LineCmpd, LineAlign, LineWidth
+
 from core.ui_objects.atrib.image.image import (
     ImageName,
     ImageHidden,
@@ -1473,15 +1477,11 @@ class FillRect(BaseContentTag):
     """a:fillRect - прямоугольник заливки"""
     __slots__ = ()
 
-    def __init__(self, objects: Objects | list = None):
-        super().__init__(objects)
-
     @property
     def tag(self) -> str:
         return "a:fillRect"
 
 
-# todo я тут
 class SpPr(BaseContainerTag):
     """pic:spPr - свойства фигуры (обводка, заливка, эффекты)"""
 
@@ -1597,14 +1597,41 @@ class Xfrm(BaseContainerTag):
         return []
 
 
-# todo тут
 class Off(BaseContentTag):
-    ""
-    __slots__ = ("_type", "_clear")
+    """Позиция X для элемента off"""
 
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    __slots__ = ("_x", "_y")
+
+    def __init__(self):
+        self._x = X("0")
+        self._y = Y("0")
+
+    @property
+    def x(self) -> str:
+        """Позиция X в EMU"""
+        return str(self._x.value)
+
+    @x.setter
+    def x(self, value: int):
+        self._x.value = str(value)
+
+    @property
+    def y(self) -> str:
+        """Позиция Y в EMU"""
+        return str(self._y.value)
+
+    @y.setter
+    def y(self, value: int):
+        self._y.value = str(value)
+
+    def set_position(self, x: int, y: int):
+        """Установить позицию"""
+        self.x = x
+        self.y = y
+
+    def get_position(self) -> tuple[int, int]:
+        """Получить позицию"""
+        return (int(self.x), int(self.y))
 
     @property
     def tag(self) -> str:
@@ -1612,14 +1639,14 @@ class Off(BaseContentTag):
 
 
 class PrstGeom(BaseContainerTag):
-    ""
+    """a:prstGeom - предустановленная геометрическая форма"""
 
-    def __init__(self, objects: Objects | list = None):
+    __slots__ = ("_prst",)
+
+    def __init__(self, objects: Objects | list = None, prst: str = "rect"):
         super().__init__(objects)
 
-    @property
-    def tag(self):
-        return "a:prstGeom"
+        self._prst = Prst(prst)
 
     @property
     def access_children(self):
@@ -1629,14 +1656,24 @@ class PrstGeom(BaseContainerTag):
     def access_property(self) -> list[dict]:
         return []
 
+    @property
+    def prst(self) -> str:
+        """Тип предустановленной формы"""
+        return self._prst.value
+
+    @prst.setter
+    def prst(self, value: str):
+        self._prst.value = value
+
+    @property
+    def tag(self):
+        return "a:prstGeom"
+
 
 class avLst(BaseContentTag):
-    ""
-    __slots__ = ("_type", "_clear")
+    """a:avLst - список регулировок для предустановленных форм"""
 
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    __slots__ = ("_type", "_clear")
 
     @property
     def tag(self) -> str:
@@ -1644,12 +1681,9 @@ class avLst(BaseContentTag):
 
 
 class NoFill(BaseContentTag):
-    "a:noFill"
-    __slots__ = ("_type", "_clear")
+    """a:noFill - отсутствие заливки фигуры"""
 
-    def __init__(self, type: TypeSpec = None, clear: ClearSpec = None):
-        self.clear = clear
-        self.type = type
+    __slots__ = ()
 
     @property
     def tag(self) -> str:
@@ -1657,10 +1691,53 @@ class NoFill(BaseContentTag):
 
 
 class Ln(BaseContainerTag):
-    ""
+    """a:ln - обводка (контур) фигуры"""
+
+    __slots__ = ("_width", "_cap", "_cmpd", "_align")
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
+        # Атрибуты линии
+        self._width = LineWidth("9525")  # Ширина (по умолчанию 1 pt = 9525 EMU)
+        self._cap = LineCap("flat")  # Тип окончания линии
+        self._cmpd = LineCmpd("sng")  # Составная линия
+        self._align = LineAlign("ctr")  # Выравнивание
+
+    @property
+    def width(self) -> str:
+        """Ширина линии в EMU (1 pt = 9525 EMU)"""
+        return str(self._width.value)
+
+    @width.setter
+    def width(self, value: int):
+        self._width.value = str(value)
+
+    @property
+    def cap(self) -> str:
+        """Тип окончания линии: flat, round, square"""
+        return self._cap.value
+
+    @cap.setter
+    def cap(self, value: str):
+        self._cap.value = value
+
+    @property
+    def cmpd(self) -> str:
+        """Составная линия: sng, dbl, thickThin, thinThick, tri"""
+        return self._cmpd.value
+
+    @cmpd.setter
+    def cmpd(self, value: str):
+        self._cmpd.value = value
+
+    @property
+    def align(self) -> str:
+        """Выравнивание: ctr, in, out"""
+        return self._align.value
+
+    @align.setter
+    def align(self, value: str):
+        self._align.value = value
 
     @property
     def tag(self):
