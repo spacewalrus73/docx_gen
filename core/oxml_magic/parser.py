@@ -73,7 +73,8 @@ def read_xml_markup(xml_tree: etree.ElementBase):
             ))
             if len(access_property) > 0:
                 position = access_property[0].get("required_position")
-                obj.property[position] = cls_object
+                if position < len(obj.property):
+                    obj.property[position] = cls_object
             else:
                 obj.objects.append(cls_object)
     return obj
