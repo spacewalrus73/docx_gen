@@ -114,9 +114,9 @@ def qn(tag: str) -> str:
     return f"{{{uri}}}{tagroot}"
 
 
-def find_qn(collection: dict[str, str]):
-    items = list(filter(lambda x: qn_pattern.match(x.keys()), collection))
-    # return re.findall(qn_pattern, collection)
+# def find_qn(collection: dict[str, str]):
+#     items = list(filter(lambda x: qn_pattern.match(x.keys()), collection))
+#     return re.findall(qn_pattern, collection)
 
 
 class XmlString(str):
@@ -138,7 +138,7 @@ class XmlString(str):
         lines_other = other.splitlines()
         if len(lines) != len(lines_other):
             return False
-        for line, line_other in zip(lines, lines_other):
+        for line, line_other in zip(lines, lines_other, strict=True):
             if not self._eq_elm_strs(line, line_other):
                 return False
         return True
@@ -166,9 +166,7 @@ class XmlString(str):
             return False
         if close != close_2:
             return False
-        if text != text_2:
-            return False
-        return True
+        return text == text_2
 
     @classmethod
     def _parse_line(cls, line: str) -> tuple[str, str, str, str]:

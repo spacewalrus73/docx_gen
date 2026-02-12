@@ -96,20 +96,19 @@ class BaseContainerTag(BaseTag):
         try:
             return list(
                 filter(
-                    lambda x: self._is_class_property(x, property),
-                    self.access_property
+                    lambda x: self._is_class_property(x, property), self.access_property
                 )
             )[0]
-        except IndexError:
+        except IndexError as index_error:
             raise AttributeError(
-                f'The class of the object: {property} '
-                f'being modified must be in '
-                f'access_property: {self._get_property_classes()}'
-            )
+                f"The class of the object: {property} "
+                f"being modified must be in "
+                f"access_property: {self._get_property_classes()}"
+            ) from index_error
 
     @staticmethod
     def _is_class_property(item: dict, property: BaseTag) -> bool:
-        return isinstance(property, item.get('class'))
+        return isinstance(property, item.get("class"))
 
     def _get_property_classes(self):
-        return [i.get('class').__name__ for i in self.access_property]
+        return [i.get("class").__name__ for i in self.access_property]

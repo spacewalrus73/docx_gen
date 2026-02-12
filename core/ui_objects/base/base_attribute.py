@@ -146,7 +146,7 @@ class SimpleAttribute(BaseAttribute):
     def value(self, another: str | int | float):
         if isinstance(another, str) and another.isdecimal():
             self._value = another
-        elif isinstance(another, int) or isinstance(another, float):
+        elif isinstance(another, int | float):
             self._value = str(another)
         else:
             TypeError(f"another must be str or int not {type(another)}")
