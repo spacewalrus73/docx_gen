@@ -16,6 +16,8 @@ from core.ui_objects.paragraph import Paragraph, ParagraphProperty
 from core.ui_objects.run import Run, RunProperty
 from core.ui_objects.section import Section
 from core.ui_objects.text import Bold, Font, Italic, Tab, Text
+from core.ui_objects.image import image
+
 
 CLASS_REGISTRY: dict[str, dict[str, Any]] = {}
 
@@ -46,9 +48,11 @@ def _extract_slot_attributes(cls: BaseContainerTag) -> list:
 
 def _register_module_classes(module, initialized_classes: list) -> None:
     """Registers all suitable classes from a module."""
+    from inspect import getsource
+    print(dir(module), "111111111111111111111111111111111", module)
+    # print(getsource(module), "33333333333333333333333")
     for attr_name in dir(module):
         attr = getattr(module, attr_name)
-
         if not _is_valid_tag_class(attr):
             continue
         if attr_name in initialized_classes:
@@ -77,6 +81,7 @@ def _discover_and_register() -> None:
 
         try:
             module = importlib.import_module(f".{module_name}", __package__)
+            importlib.reload(module)
             _register_module_classes(module, initialized_classes)
         except ImportError as e:
             print(f"Warning: Could not import {module_name}: {e}")

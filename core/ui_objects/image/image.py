@@ -1689,7 +1689,6 @@ class NoFill(BaseContentTag):
     def tag(self) -> str:
         return "a:noFill"
 
-
 class Ln(BaseContainerTag):
     """a:ln - обводка (контур) фигуры"""
 
