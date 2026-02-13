@@ -1,6 +1,7 @@
 """Module for automatic registration of UI objects."""
 
 import importlib
+import os.path
 import pkgutil
 
 from typing import Any
@@ -16,10 +17,9 @@ from core.ui_objects.paragraph import Paragraph, ParagraphProperty
 from core.ui_objects.run import Run, RunProperty
 from core.ui_objects.section import Section
 from core.ui_objects.text import Bold, Font, Italic, Tab, Text
-from core.ui_objects.image import image
-
 
 CLASS_REGISTRY: dict[str, dict[str, Any]] = {}
+_ignorable_modules = ("__main__", "__init__")
 
 
 def _is_valid_tag_class(cls: type) -> bool:
@@ -48,9 +48,6 @@ def _extract_slot_attributes(cls: BaseContainerTag) -> list:
 
 def _register_module_classes(module, initialized_classes: list) -> None:
     """Registers all suitable classes from a module."""
-    from inspect import getsource
-    print(dir(module), "111111111111111111111111111111111", module)
-    # print(getsource(module), "33333333333333333333333")
     for attr_name in dir(module):
         attr = getattr(module, attr_name)
         if not _is_valid_tag_class(attr):
@@ -70,25 +67,35 @@ def _register_module_classes(module, initialized_classes: list) -> None:
             print(f"Warning: Could not register class {attr_name}: {e}")
 
 
+def get_all_submodules(package):
+    modules = []
+    for importer, module_name, is_pkg in pkgutil.iter_modules(package):
+        if is_pkg:
+            modules.extend(
+                get_all_submodules([os.path.join(importer.path, module_name)]))
+        else:
+            if module_name in _ignorable_modules:
+                continue
+            modules.append({
+                "package": os.path.relpath(importer.path).replace(os.sep, "."),
+                "name": module_name,
+            })
+    return modules
+
+
 def _discover_and_register() -> None:
     """Discovers and registers all classes in the package."""
     initialized_classes = []
-    module_names = [module_name for _, module_name, _ in pkgutil.iter_modules(__path__)]
-    module_names[-1] = module_names.pop(module_names.index('document'))
-    for module_name in module_names:
-        if module_name in ("__main__", "__init__"):
-            continue
-
+    modules_lst = get_all_submodules(__path__)
+    for module_config in modules_lst:
         try:
-            module = importlib.import_module(f".{module_name}", __package__)
-            importlib.reload(module)
+            module = importlib.import_module(f".{module_config["name"]}", module_config["package"])
             _register_module_classes(module, initialized_classes)
         except ImportError as e:
-            print(f"Warning: Could not import {module_name}: {e}")
+            print(f"Warning: Could not import {module_config}: {e}")
 
 
 _discover_and_register()
-
 
 __all__ = [
     "Run",

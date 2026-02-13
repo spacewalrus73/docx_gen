@@ -69,12 +69,12 @@ def read_xml_markup(xml_tree: etree.ElementBase):
         cls_object = read_xml_markup(child)
         if cls_object:
             access_property = list(filter(
-                lambda x: x.get('class') == cls_object.__class__, obj.access_property
+                lambda x: x.get('class').__name__ == cls_object.__class__.__name__, obj.access_property
             ))
+
             if len(access_property) > 0:
                 position = access_property[0].get("required_position")
-                if position < len(obj.property):
-                    obj.property[position] = cls_object
+                obj.property.insert(position, cls_object)
             else:
                 obj.objects.append(cls_object)
     return obj
