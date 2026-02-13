@@ -25,7 +25,7 @@ class BaseTag(ABC):
 
     @property
     def attrs(self):
-        """Complete dict with attributes for xml craft"""
+        """Complete dict with attributes for XML craft"""
         slots = getattr(self, "__slots__", ())
         attrs = {}
         for slot in slots:

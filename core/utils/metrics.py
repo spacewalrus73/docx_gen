@@ -1,9 +1,10 @@
-"""Objects shared by ui_objects modules."""
+# -----------------------------------------------------------------------------
+# Adapted from python-docx (MIT License)
+# Copyright (c) 2013 Steve Canny, https://github.com/python-openxml/python-docx
+# -----------------------------------------------------------------------------
 
-from __future__ import annotations
 
-
-class Length(int):
+class Length(int, float):
     """Base class for length constructor classes Inches, Cm, Mm, Px, and Emu.
 
     Behaves as an int count of English Metric Units, 914,400 to the inch, 36,000 to the
@@ -68,8 +69,10 @@ class Cm(Length):
 
 
 class Emu(Length):
-    """Convenience constructor for length in English Metric Units, e.g. ``width =
-    Emu(457200)``."""
+    """
+    Convenience constructor for length in English Metric Units, e.g. ``width =
+        Emu(457200)``.
+    """
 
     def __new__(cls, emu: int):
         return Length.__new__(cls, int(emu))
@@ -108,11 +111,7 @@ class RGBColor(tuple[int, int, int]):
     def __new__(cls, r: int, g: int, b: int):
         msg = "RGBColor() takes three integer values 0-255"
         for val in (r, g, b):
-            if (
-                    not isinstance(val, int)  # pyright: ignore[reportUnnecessaryIsInstance]
-                    or val < 0
-                    or val > 255
-            ):
+            if not isinstance(val, int) or val < 0 or val > 255:
                 raise ValueError(msg)
         return super().__new__(cls, (r, g, b))
 
@@ -124,7 +123,7 @@ class RGBColor(tuple[int, int, int]):
         return "%02X%02X%02X" % self
 
     @classmethod
-    def from_string(cls, rgb_hex_str: str) -> RGBColor:
+    def from_string(cls, rgb_hex_str: str):
         """Return a new instance from an RGB color hex string like ``'3C2F80'``."""
         r = int(rgb_hex_str[:2], 16)
         g = int(rgb_hex_str[2:4], 16)

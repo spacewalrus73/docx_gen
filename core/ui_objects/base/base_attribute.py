@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from enum import Enum
 from typing import ClassVar
+from core.utils.metrics import Length
 
 
 class BaseAttribute:
@@ -135,6 +136,29 @@ class BooleanAttribute(BaseAttribute):
 
 class SimpleAttribute(BaseAttribute):
     def __init__(self, xml_name: str, value: str | int | float):
+        self.value = value
+        super().__init__(xml_name)
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, another: str | int | float):
+        if isinstance(another, str) and another.isdecimal():
+            self._value = another
+        elif isinstance(another, int | float):
+            self._value = str(another)
+        else:
+            TypeError(f"another must be str or int not {type(another)}")
+
+    @property
+    def xml_name(self):
+        return self._xml_name
+
+
+class SizeAttribute(BaseAttribute):
+    def __init__(self, xml_name: str, value: Length):
         self.value = value
         super().__init__(xml_name)
 
