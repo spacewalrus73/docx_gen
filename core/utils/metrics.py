@@ -5,7 +5,8 @@
 
 
 class Length(int, float):
-    """Base class for length constructor classes Inches, Cm, Mm, Px, and Emu.
+    """
+    Base class for length constructor classes Inches, Cm, Mm, Px, and Emu.
 
     Behaves as an int count of English Metric Units, 914,400 to the inch, 36,000 to the
     mm. Provides convenience unit conversion methods in the form of read-only
