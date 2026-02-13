@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from enum import Enum
 from typing import ClassVar
-from core.utils.metrics import Length
+from core.utils.metrics import Length, Twips
 
 
 class BaseAttribute:
@@ -158,20 +158,20 @@ class SimpleAttribute(BaseAttribute):
 
 
 class SizeAttribute(BaseAttribute):
-    def __init__(self, xml_name: str, value: Length):
+    def __init__(self, xml_name: str, value: Length | Twips):
         self.value = value
         super().__init__(xml_name)
 
     @property
-    def value(self):
+    def value(self) -> int:
         return self._value
 
     @value.setter
-    def value(self, another: str | int | float):
-        if isinstance(another, str) and another.isdecimal():
+    def value(self, another: Twips | Length):
+        if isinstance(another, Twips):
             self._value = another
-        elif isinstance(another, int | float):
-            self._value = str(another)
+        elif isinstance(another, Length):
+            self._value = Twips(another)
         else:
             TypeError(f"another must be str or int not {type(another)}")
 

@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 
 
-class Length(int, float):
+class Length(int):
     """
     Base class for length constructor classes Inches, Cm, Mm, Px, and Emu.
 
@@ -23,9 +23,9 @@ class Length(int, float):
         return int.__new__(cls, emu)
 
     @property
-    def cm(self):
+    def cm(self) -> float:
         """The equivalent length expressed in centimeters (float)."""
-        return self / float(self._EMUS_PER_CM)
+        return float(self) / float(self._EMUS_PER_CM)
 
     @property
     def emu(self):
@@ -35,22 +35,22 @@ class Length(int, float):
     @property
     def inches(self):
         """The equivalent length expressed in inches (float)."""
-        return self / float(self._EMUS_PER_INCH)
+        return float(self) / float(self._EMUS_PER_INCH)
 
     @property
     def mm(self):
         """The equivalent length expressed in millimeters (float)."""
-        return self / float(self._EMUS_PER_MM)
+        return float(self) / float(self._EMUS_PER_MM)
 
     @property
     def pt(self):
         """Floating point length in points."""
-        return self / float(self._EMUS_PER_PT)
+        return float(self) / float(self._EMUS_PER_PT)
 
     @property
     def twips(self):
         """The equivalent length expressed in twips (int)."""
-        return int(round(self / float(self._EMUS_PER_TWIP)))
+        return int(round(float(self) / float(self._EMUS_PER_TWIP)))
 
 
 class Inches(Length):
