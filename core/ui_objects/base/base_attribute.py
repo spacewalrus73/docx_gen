@@ -135,7 +135,7 @@ class BooleanAttribute(BaseAttribute):
 
 class SimpleAttribute(BaseAttribute):
     def __init__(self, xml_name: str, value: str | int | float):
-        self.value = value
+        self._value = value
         super().__init__(xml_name)
 
     @property

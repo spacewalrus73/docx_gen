@@ -10,7 +10,7 @@ class GraphicFrameLocksNS(SimpleAttribute):
 class NoChangeAspect(EnumAttribute):
     """Запрет изменения пропорций"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoChangeAspect.Options"):
         super().__init__(value=value, xml_name="noChangeAspect")
 
     class Options(Enum):
@@ -21,7 +21,7 @@ class NoChangeAspect(EnumAttribute):
 class NoChangeArrowheads(EnumAttribute):
     """Запрет изменения стрелок (для линий)"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoChangeArrowheads.Options"):
         super().__init__(value=value, xml_name="noChangeArrowheads")
 
     class Options(Enum):
@@ -32,7 +32,7 @@ class NoChangeArrowheads(EnumAttribute):
 class NoEditPoints(EnumAttribute):
     """Запрет редактирования точек фигуры"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoEditPoints.Options"):
         super().__init__(value=value, xml_name="noEditPoints")
 
     class Options(Enum):
@@ -43,7 +43,7 @@ class NoEditPoints(EnumAttribute):
 class NoAdjustHandles(EnumAttribute):
     """ Запрет изменения ручек настройки"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoAdjustHandles.Options"):
         super().__init__(value=value, xml_name="noAdjustHandles")
 
     class Options(Enum):
@@ -54,7 +54,7 @@ class NoAdjustHandles(EnumAttribute):
 class NoChangeShapeType(EnumAttribute):
     """Запрет изменения типа фигуры"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoChangeShapeType.Options"):
         super().__init__(value=value, xml_name="noChangeShapeType")
 
     class Options(Enum):
@@ -65,7 +65,7 @@ class NoChangeShapeType(EnumAttribute):
 class NoChangeStart(EnumAttribute):
     """Запрет изменения начальной точки"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoChangeStart.Options"):
         super().__init__(value=value, xml_name="noChangeStart")
 
     class Options(Enum):
@@ -76,7 +76,7 @@ class NoChangeStart(EnumAttribute):
 class NoChangeEnd(EnumAttribute):
     """Запрет изменения конечной точки"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoChangeEnd.Options"):
         super().__init__(value=value, xml_name="noChangeEnd")
 
     class Options(Enum):
@@ -87,7 +87,7 @@ class NoChangeEnd(EnumAttribute):
 class NoMove(EnumAttribute):
     """Запрет перемещения"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoMove.Options"):
         super().__init__(value=value, xml_name="noMove")
 
     class Options(Enum):
@@ -98,7 +98,7 @@ class NoMove(EnumAttribute):
 class NoResize(EnumAttribute):
     """Запрет изменения размера"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoResize.Options"):
         super().__init__(value=value, xml_name="noResize")
 
     class Options(Enum):
@@ -109,7 +109,7 @@ class NoResize(EnumAttribute):
 class NoRotate(EnumAttribute):
     """Запрет вращения"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoRotate.Options"):
         super().__init__(value=value, xml_name="noRotate")
 
     class Options(Enum):
@@ -120,7 +120,7 @@ class NoRotate(EnumAttribute):
 class NoSelect(EnumAttribute):
     """Запрет выделения"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoSelect.Options"):
         super().__init__(value=value, xml_name="noSelect")
 
     class Options(Enum):
@@ -131,7 +131,7 @@ class NoSelect(EnumAttribute):
 class NoCrop(EnumAttribute):
     """Запрет обрезки"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoCrop.Options"):
         super().__init__(value=value, xml_name="noCrop")
 
     class Options(Enum):
@@ -142,7 +142,7 @@ class NoCrop(EnumAttribute):
 class NoChangeBullet(EnumAttribute):
     """Запрет изменения маркеров (для списков)"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoChangeBullet.Options"):
         super().__init__(value=value, xml_name="noChangeBullet")
 
     class Options(Enum):
@@ -153,7 +153,7 @@ class NoChangeBullet(EnumAttribute):
 class NoGrp(EnumAttribute):
     """Запрет группировки"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoGrp.Options"):
         super().__init__(value=value, xml_name="noGrp")
 
     class Options(Enum):
@@ -164,7 +164,7 @@ class NoGrp(EnumAttribute):
 class NoUngrp(EnumAttribute):
     """Запрет разгруппировки"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoUngrp.Options"):
         super().__init__(value=value, xml_name="noUngrp")
 
     class Options(Enum):
@@ -175,7 +175,7 @@ class NoUngrp(EnumAttribute):
 class NoDrilldown(EnumAttribute):
     """Запрет детализации (SmartArt)"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoDrilldown.Options"):
         super().__init__(value=value, xml_name="noDrilldown")
 
     class Options(Enum):
@@ -186,7 +186,7 @@ class NoDrilldown(EnumAttribute):
 class NoTextEdit(EnumAttribute):
     """Запрет редактирования текста"""
 
-    def __init__(self, value: str):
+    def __init__(self, value: "NoTextEdit.Options"):
         super().__init__(value=value, xml_name="noTextEdit")
 
     class Options(Enum):

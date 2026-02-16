@@ -24,6 +24,9 @@ nsmap = {
     "xml": "http://www.w3.org/XML/1998/namespace",
     "xsi": "http://www.w3.org/2001/XMLSchema-instance",
     "mc": "http://schemas.openxmlformats.org/markup-compatibility/2006",
+    "wp14": "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing",
+    "uri": "http://schemas.microsoft.com/office/drawing/2010/main",
+    "": ""
 }
 
 pfxmap = {value: key for key, value in nsmap.items()}
@@ -38,68 +41,22 @@ class NamespacePrefixedTag(str):
         return super().__new__(cls, nstag)
 
     def __init__(self, nstag: str):
-        self._pfx, self._local_part = nstag.split(":")
+        self._pfx, self._local_part = nstag.split(":") if ":" in nstag else ("", nstag)
         self._ns_uri = nsmap[self._pfx]
 
     @property
     def clark_name(self) -> str:
+        if self._ns_uri == "":
+            return self._local_part
         return f"{{{self._ns_uri}}}{self._local_part}"
 
     @classmethod
     def from_clark_name(cls, clark_name: str) -> NamespacePrefixedTag:
-        nsuri, local_name = clark_name[1:].split("}")
-        nstag = f"{pfxmap[nsuri]}:{local_name}"
-        return cls(nstag)
+        if clark_name.startswith("{"):
+            nsuri, local_name = clark_name[1:].split("}")
+            return cls(f"{pfxmap[nsuri]}:{local_name}")
+        return cls(clark_name)
 
-    @property
-    def local_part(self) -> str:
-        """The local part of this tag.
-
-        E.g. "foobar" is returned for tag "f:foobar".
-        """
-        return self._local_part
-
-    @property
-    def nsmap(self) -> dict[str, str]:
-        """Single-member dict mapping prefix of this tag to it's namespace name.
-
-        Example: `{"f": "http://foo/bar"}`. This is handy for passing to xpath calls
-        and other uses.
-        """
-        return {self._pfx: self._ns_uri}
-
-    @property
-    def nspfx(self) -> str:
-        """The namespace-prefix for this tag.
-
-        For example, "f" is returned for tag "f:foobar".
-        """
-        return self._pfx
-
-    @property
-    def nsuri(self) -> str:
-        """The namespace URI for this tag.
-
-        For example, "http://foo/bar" would be returned for tag "f:foobar" if the "f"
-        prefix maps to "http://foo/bar" in nsmap.
-        """
-        return self._ns_uri
-
-
-def nsdecls(*prefixes: str) -> str:
-    """Namespace declaration including each namespace-prefix in `prefixes`.
-
-    Handy for adding required namespace declarations to a tree root element.
-    """
-    return " ".join(f'xmlns:{pfx}="{nsmap[pfx]}"' for pfx in prefixes)
-
-
-def nspfxmap(*nspfxs: str) -> dict[str, str]:
-    """Subset namespace-prefix mappings specified by *nspfxs*.
-
-    Any number of namespace prefixes can be supplied, e.g. namespaces("a", "r", "p").
-    """
-    return {pfx: nsmap[pfx] for pfx in nspfxs}
 
 
 def qn(tag: str) -> str:
@@ -109,14 +66,11 @@ def qn(tag: str) -> str:
     into a Clark-notation qualified tag name for lxml. For example, `qn("w:p")` returns
     "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}p".
     """
-    prefix, tagroot = tag.split(":")
-    uri = nsmap[prefix]
-    return f"{{{uri}}}{tagroot}"
-
-
-def find_qn(collection: dict[str, str]):
-    items = list(filter(lambda x: qn_pattern.match(x.keys()), collection))
-    # return re.findall(qn_pattern, collection)
+    if ":" in tag:
+        prefix, tagroot = tag.split(":")
+        uri = nsmap[prefix]
+        return f"{{{uri}}}{tagroot}"
+    return tag
 
 
 class XmlString(str):

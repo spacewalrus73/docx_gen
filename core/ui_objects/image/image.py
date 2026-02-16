@@ -59,112 +59,6 @@ from core.ui_objects.atrib.image.blip import (
 )
 
 
-class Inline(BaseContainerTag):
-    _slots__ = ("_objects", "_property", "_distT", "_distB", "_distL", "_distR", "_")
-
-    def __init__(self, objects: Objects | list = None):
-        super().__init__(objects)
-        self._distT = DistTop(0)
-        self._distB = DistBottom(0)
-        self._distL = DistLeft(0)
-        self._distR = DistRight(0)
-        self._anchorId = AnchorId(self.generate_random_id())
-        self._editId = EditId(self.generate_random_id())
-
-    @property
-    def dist_top(self):
-        return self._distT.value
-
-    @dist_top.setter
-    def dist_top(self, value):
-        """take value in centimeters"""
-
-        self._distT.value = Cm(value)
-
-    @property
-    def dist_bottom(self):
-        return self._distB.value
-
-    @dist_bottom.setter
-    def dist_bottom(self, value):
-        """take value in centimeters"""
-
-        self._distB.value = Cm(value)
-
-    @property
-    def dist_left(self):
-        return self._distL.value
-
-    @dist_left.setter
-    def dist_left(self, value):
-        """take value in centimeters"""
-
-        self._distL.value = Cm(value)
-
-    @property
-    def dist_right(self):
-        return self._distR.value
-
-    @dist_right.setter
-    def dist_right(self, value):
-        """take value in centimeters"""
-
-        self._distR.value = Cm(value)
-
-    @property
-    def anchor_id(self):
-        """wp14:anchorId"""
-        return self._anchorId.value
-
-    @anchor_id.setter
-    def anchor_id(self, value):
-        self._anchorId.value = value
-
-    @property
-    def edit_id(self):
-        """wp14:editId"""
-
-        return self._editId.value
-
-    @edit_id.setter
-    def edit_id(self, value):
-        self._editId.value = value
-
-    def set_distances(self, top=0, bottom=0, left=0, right=0):
-        """Установить все отступы одновременно"""
-
-        self.dist_top = top
-        self.dist_bottom = bottom
-        self.dist_left = left
-        self.dist_right = right
-
-    def set_all_distances(self, value):
-        """Установить одинаковые отступы со всех сторон"""
-
-        self.dist_top = value
-        self.dist_bottom = value
-        self.dist_left = value
-        self.dist_right = value
-
-    @staticmethod
-    def generate_random_id():
-        """Сгенерировать случайный Id"""
-
-        return uuid.uuid4().hex[:8].upper()
-
-    @property
-    def tag(self):
-        return "wp:inline"
-
-    @property
-    def access_children(self):
-        return []
-
-    @property
-    def access_property(self) -> list[dict]:
-        return []
-
-
 class Extent(BaseContentTag):
     __slots__ = ("_width", "_height")
 
@@ -255,22 +149,20 @@ class DocProperties(BaseContentTag):
     __slots__ = ("_id", "_name", "_description", "_title", "_hidden")
 
     def __init__(self):
-        self._id = ImageId(0)
+        self._id = ImageId("0")
         self._name = ImageName("")
         self._description = ImageDescr("")
         self._title = ImageTitle("")
-        self._hidden = ImageHidden("0")
+        self._hidden = ImageHidden(ImageHidden.Options.visible)
 
     @property
-    def id(self) -> int:
+    def id(self) -> str:
         """Уникальный идентификатор объекта"""
         return self._id.value
 
     @id.setter
     def id(self, value: int):
-        if not isinstance(value, int) or value < 1:
-            raise ValueError("ID должен быть положительным целым числом")
-        self._id.value = value
+        self._id.value = str(value)
 
     @property
     def name(self) -> str:
@@ -306,7 +198,7 @@ class DocProperties(BaseContentTag):
 
     @hidden.setter
     def hidden(self, value: bool):
-        self._hidden.value = "1" if value else "0"
+        self._hidden.value = ImageHidden.Options.hidden if value else ImageHidden.Options.visible
 
     @property
     def tag(self):
@@ -314,6 +206,207 @@ class DocProperties(BaseContentTag):
 
     def __str__(self):
         return f"DocPr(id={self.id}, name='{self.name}')"
+
+
+class GraphicFrameLocks(BaseContentTag):
+    """
+    DrawingML Graphic Frame Locks
+    Блокировки для графического фрейма
+    """
+    __slots__ = (
+        "_no_change_aspect", "_no_change_arrowheads",
+        "_no_change_start", "_no_change_end", "_no_edit_points",
+        "_no_adjust_handles", "_no_change_shape_type", "_no_move",
+        "_no_resize", "_no_rotate", "_no_select", "_no_crop", "_no_change_bullet",
+        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit", "_xmlns"
+    )
+
+    def __init__(self):
+        """Блокировка изменения пропорций (1 = да, 0 = нет)"""
+
+        self._no_change_aspect = NoChangeAspect(NoChangeAspect.Options.access)
+        self._no_change_arrowheads = NoChangeArrowheads(
+            NoChangeArrowheads.Options.access)
+        self._no_change_start = NoChangeStart(NoChangeStart.Options.access)
+        self._no_change_end = NoChangeEnd(NoChangeEnd.Options.access)
+        self._no_edit_points = NoEditPoints(NoEditPoints.Options.access)
+        self._no_adjust_handles = NoAdjustHandles(NoAdjustHandles.Options.access)
+        self._no_change_shape_type = NoChangeShapeType(NoChangeShapeType.Options.access)
+        self._no_move = NoMove(NoMove.Options.access)
+        self._no_resize = NoResize(NoResize.Options.access)
+        self._no_rotate = NoRotate(NoRotate.Options.access)
+        self._no_select = NoSelect(NoSelect.Options.access)
+        self._no_crop = NoCrop(NoCrop.Options.access)
+        self._no_change_bullet = NoChangeBullet(NoChangeBullet.Options.access)
+        self._no_grp = NoGrp(NoGrp.Options.access)
+        self._no_ungrp = NoUngrp(NoUngrp.Options.access)
+        self._no_drill_down = NoDrilldown(NoDrilldown.Options.access)
+        self._no_text_edit = NoTextEdit(NoTextEdit.Options.access)
+        self._xmlns = GraphicFrameLocksNS("")
+
+    @property
+    def no_change_aspect(self):
+        return self._no_change_aspect.value
+
+    @no_change_aspect.setter
+    def no_change_aspect(self, value: bool):
+        self._no_change_aspect.value = NoChangeAspect.Options.restrict if value else NoChangeAspect.Options.access
+
+    @property
+    def no_change_arrowheads(self):
+        return self._no_change_arrowheads.value
+
+    @no_change_arrowheads.setter
+    def no_change_arrowheads(self, value: bool):
+        self._no_change_arrowheads.value = NoChangeArrowheads.Options.restrict if value else NoChangeArrowheads.Options.access
+
+    @property
+    def no_change_start(self):
+        """Блокировка изменения начальной точки"""
+        return self._no_change_start.value
+
+    @no_change_start.setter
+    def no_change_start(self, value: bool):
+        self._no_change_start.value = NoChangeStart.Options.restrict if value else NoChangeStart.Options.access
+
+    @property
+    def no_change_end(self):
+        """Блокировка изменения конечной точки"""
+        return self._no_change_end.value
+
+    @no_change_end.setter
+    def no_change_end(self, value: bool):
+        self._no_change_end.value = NoChangeEnd.Options.restrict if value else NoChangeEnd.Options.access
+
+    @property
+    def no_edit_points(self):
+        """Запрет редактирования точек"""
+        return self._no_edit_points.value
+
+    @no_edit_points.setter
+    def no_edit_points(self, value: bool):
+        self._no_edit_points.value = NoEditPoints.Options.restrict if value else NoEditPoints.Options.access
+
+    @property
+    def no_adjust_handles(self):
+        """Запрет изменения ручек настройки"""
+        return self._no_adjust_handles
+
+    @no_adjust_handles.setter
+    def no_adjust_handles(self, value: bool):
+        self._no_adjust_handles.value = NoAdjustHandles.Options.restrict if value else NoAdjustHandles.Options.access
+
+    @property
+    def no_change_shape_type(self):
+        """Запрет изменения типа фигуры"""
+        return self._no_change_shape_type.value
+
+    @no_change_shape_type.setter
+    def no_change_shape_type(self, value: bool):
+        self._no_change_shape_type.value = NoChangeShapeType.Options.restrict if value else NoChangeShapeType.Options.access
+
+    @property
+    def no_move(self):
+        """Запрет перемещения"""
+        return self._no_move.value
+
+    @no_move.setter
+    def no_move(self, value: bool):
+        self._no_move.value = NoMove.Options.restrict if value else NoMove.Options.access
+
+    @property
+    def no_resize(self):
+        """Запрет изменения размера"""
+        return self._no_resize.value
+
+    @no_resize.setter
+    def no_resize(self, value: bool):
+        self._no_resize.value = NoResize.Options.restrict if value else NoResize.Options.access
+
+    @property
+    def no_rotate(self):
+        """Запрет вращения"""
+        return self._no_rotate.value
+
+    @no_rotate.setter
+    def no_rotate(self, value: bool):
+        self._no_rotate.value = NoRotate.Options.restrict if value else NoRotate.Options.access
+
+    @property
+    def no_select(self):
+        """Запрет выделения"""
+        return self._no_select.value
+
+    @no_select.setter
+    def no_select(self, value: bool):
+        self._no_select.value = NoSelect.Options.restrict if value else NoSelect.Options.access
+
+    @property
+    def no_crop(self):
+        """Запрет обрезки"""
+        return self._no_crop.value
+
+    @no_crop.setter
+    def no_crop(self, value: bool):
+        self._no_crop.value = NoCrop.Options.restrict if value else NoCrop.Options.access
+
+    @property
+    def no_change_bullet(self):
+        """Запрет обрезки"""
+        return self._no_change_bullet.value
+
+    @no_change_bullet.setter
+    def no_change_bullet(self, value: bool):
+        self._no_change_bullet.value = NoChangeBullet.Options.restrict if value else NoChangeBullet.Options.access
+
+    @property
+    def no_grp(self):
+        """Запрет обрезки"""
+        return self._no_grp.value
+
+    @no_grp.setter
+    def no_grp(self, value: bool):
+        self._no_grp.value = NoGrp.Options.restrict if value else NoGrp.Options.access
+
+    @property
+    def no_ungrp(self):
+        """Запрет обрезки"""
+        return self._no_ungrp.value
+
+    @no_ungrp.setter
+    def no_ungrp(self, value: bool):
+        self._no_ungrp.value = NoUngrp.Options.restrict if value else NoUngrp.Options.access
+
+    @property
+    def no_drill_down(self):
+        """Запрет обрезки"""
+        return self._no_drill_down.value
+
+    @no_drill_down.setter
+    def no_drill_down(self, value: bool):
+        self._no_drill_down.value = NoDrilldown.Options.restrict if value else NoDrilldown.Options.access
+
+    @property
+    def no_text_edit(self):
+        """Запрет обрезки"""
+        return self._no_text_edit.value
+
+    @no_text_edit.setter
+    def no_text_edit(self, value: bool):
+        self._no_text_edit.value = NoTextEdit.Options.restrict if value else NoTextEdit.Options.access
+
+    @property
+    def xmlns(self):
+        """Запрет обрезки"""
+        return self._xmlns.value
+
+    @xmlns.setter
+    def xmlns(self, value: str):
+        self._xmlns.value = value
+
+    @property
+    def tag(self) -> str:
+        return "a:graphicFrameLocks"
 
 
 class CNvGraphicFramePr(BaseContainerTag):
@@ -336,297 +429,9 @@ class CNvGraphicFramePr(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
-
-
-class GraphicFrameLocks(BaseContentTag):
-    """
-    DrawingML Graphic Frame Locks
-    Блокировки для графического фрейма
-    """
-    __slots__ = (
-        "_no_change_aspect", "_no_change_arrowheads",
-        "_no_change_start", "_no_change_end", "_no_edit_points",
-        "_no_adjust_handles", "_no_change_shape_type", "_no_move",
-        "_no_resize", "_no_rotate", "_no_select", "_no_crop", "_no_change_bullet",
-        "_no_grp", "_no_ungrp", "_no_drill_down", "_no_text_edit", "_xmlns"
-    )
-
-    def __init__(self):
-        """Блокировка изменения пропорций (1 = да, 0 = нет)"""
-
-        self.no_change_aspect = NoChangeAspect("0")
-        self.no_change_arrowheads = NoChangeArrowheads("0")
-        self.no_change_start = NoChangeStart("0")
-        self.no_change_end = NoChangeEnd("0")
-        self.no_edit_points = NoEditPoints("0")
-        self.no_adjust_handles = NoAdjustHandles("0")
-        self.no_change_shape_type = NoChangeShapeType("0")
-        self.no_change_shape_type = NoChangeShapeType("0")
-        self.no_move = NoMove("0")
-        self.no_resize = NoResize("0")
-        self.no_rotate = NoRotate("0")
-        self.no_select = NoSelect("0")
-        self.no_crop = NoCrop("0")
-        self.no_change_bullet = NoChangeBullet("0")
-        self.no_grp = NoGrp("0")
-        self.no_ungrp = NoUngrp("0")
-        self.no_drill_down = NoDrilldown("0")
-        self.no_text_edit = NoTextEdit("0")
-        self.xmlns = GraphicFrameLocksNS("")
-
-    @property
-    def no_change_aspect(self):
-        return self._no_change_aspect.value
-
-    @no_change_aspect.setter
-    def no_change_aspect(self, value: bool):
-        self._no_change_aspect.value = "1" if value else "0"
-
-    @property
-    def no_change_arrowheads(self):
-        return self._no_change_arrowheads.value
-
-    @no_change_arrowheads.setter
-    def no_change_arrowheads(self, value: bool):
-        self._no_change_arrowheads.value = "1" if value else "0"
-
-    @property
-    def no_change_start(self):
-        """Блокировка изменения начальной точки"""
-        return self._no_change_start.value
-
-    @no_change_start.setter
-    def no_change_start(self, value: bool):
-        self._no_change_start.value = "1" if value else "0"
-
-    @property
-    def no_change_end(self):
-        """Блокировка изменения конечной точки"""
-        return self._no_change_end.value
-
-    @no_change_end.setter
-    def no_change_end(self, value: bool):
-        self._no_change_end.value = "1" if value else "0"
-
-    @property
-    def no_edit_points(self):
-        """Запрет редактирования точек"""
-        return self._no_edit_points.value
-
-    @no_edit_points.setter
-    def no_edit_points(self, value: bool):
-        self._no_edit_points.value = "1" if value else "0"
-
-    @property
-    def no_adjust_handles(self):
-        """Запрет изменения ручек настройки"""
-        return self._no_adjust_handles
-
-    @no_adjust_handles.setter
-    def no_adjust_handles(self, value: bool):
-        self._no_adjust_handles.value = "1" if value else "0"
-
-    @property
-    def no_change_shape_type(self):
-        """Запрет изменения типа фигуры"""
-        return self._no_change_shape_type.value
-
-    @no_change_shape_type.setter
-    def no_change_shape_type(self, value: bool):
-        self._no_change_shape_type.value = "1" if value else "0"
-
-    @property
-    def no_move(self):
-        """Запрет перемещения"""
-        return self._no_move.value
-
-    @no_move.setter
-    def no_move(self, value: bool):
-        self._no_move.value = "1" if value else "0"
-
-    @property
-    def no_resize(self):
-        """Запрет изменения размера"""
-        return self._no_resize.value
-
-    @no_resize.setter
-    def no_resize(self, value: bool):
-        self._no_resize.value = "1" if value else "0"
-
-    @property
-    def no_rotate(self):
-        """Запрет вращения"""
-        return self._no_rotate.value
-
-    @no_rotate.setter
-    def no_rotate(self, value: bool):
-        self._no_rotate.value = "1" if value else "0"
-
-    @property
-    def no_select(self):
-        """Запрет выделения"""
-        return self._no_select.value
-
-    @no_select.setter
-    def no_select(self, value: bool):
-        self._no_select.value = "1" if value else "0"
-
-    @property
-    def no_crop(self):
-        """Запрет обрезки"""
-        return self._no_crop.value
-
-    @no_crop.setter
-    def no_crop(self, value: bool):
-        self._no_crop.value = "1" if value else "0"
-
-    @property
-    def no_change_bullet(self):
-        """Запрет обрезки"""
-        return self._no_change_bullet.value
-
-    @no_change_bullet.setter
-    def no_change_bullet(self, value: bool):
-        self._no_change_bullet.value = "1" if value else "0"
-
-    @property
-    def no_grp(self):
-        """Запрет обрезки"""
-        return self._no_grp.value
-
-    @no_grp.setter
-    def no_grp(self, value: bool):
-        self._no_grp.value = "1" if value else "0"
-
-    @property
-    def no_ungrp(self):
-        """Запрет обрезки"""
-        return self._no_ungrp.value
-
-    @no_ungrp.setter
-    def no_ungrp(self, value: bool):
-        self._no_ungrp.value = "1" if value else "0"
-
-    @property
-    def no_drill_down(self):
-        """Запрет обрезки"""
-        return self._no_drill_down.value
-
-    @no_drill_down.setter
-    def no_drill_down(self, value: bool):
-        self._no_drill_down.value = "1" if value else "0"
-
-    @property
-    def no_text_edit(self):
-        """Запрет обрезки"""
-        return self._no_text_edit.value
-
-    @no_text_edit.setter
-    def no_text_edit(self, value: bool):
-        self._no_text_edit.value = "1" if value else "0"
-
-    @property
-    def xmlns(self):
-        """Запрет обрезки"""
-        return self._xmlns.value
-
-    @xmlns.setter
-    def xmlns(self, value: str):
-        self._xmlns.value = value
-
-    @property
-    def tag(self) -> str:
-        return "a:graphicFrameLocks"
-
-    def lock_all(self):
-        """Заблокировать все изменения"""
-        self.no_change_aspect.value = 1
-        self.no_change_arrowheads.value = 1
-        self.no_change_start.value = 1
-        self.no_change_end.value = 1
-        self.no_edit_points.value = 1
-        self.no_adjust_handles.value = 1
-        self.no_change_shape_type.value = 1
-        self.no_move.value = 1
-        self.no_resize.value = 1
-        self.no_rotate.value = 1
-        self.no_select.value = 1
-        self.no_crop.value = 1
-
-    def unlock_all(self):
-        """Разблокировать все изменения"""
-        self.no_change_aspect.value = 0
-        self.no_change_arrowheads.value = 0
-        self.no_change_start.value = 0
-        self.no_change_end.value = 0
-        self.no_edit_points.value = 0
-        self.no_adjust_handles.value = 0
-        self.no_change_shape_type.value = 0
-        self.no_move.value = 0
-        self.no_resize.value = 0
-        self.no_rotate.value = 0
-        self.no_select.value = 0
-        self.no_crop.value = 0
-
-
-class Graphic(BaseContainerTag):
-    """
-    DrawingML Graphic element
-    Основной контейнер для графических данных
-    """
-    __slots__ = ()
-
-    def __init__(self, objects: Objects | list = None):
-        super().__init__(objects)
-
-    @property
-    def tag(self):
-        return "a:graphic"
-
-    @property
-    def access_children(self):
-        return []
-
-    @property
-    def access_property(self) -> list[dict]:
-        return []
-
-
-class GraphicData(BaseContainerTag):
-    """
-    DrawingML Graphic Data element
-    Содержит графические данные с указанием типа
-    """
-    __slots__ = ("_uri",)
-
-    def __init__(self, objects: Objects | list = None, uri: str = None):
-        super().__init__(objects)
-        self._uri = URIGraphicData(URIGraphicData.Options.pic.value)
-
-    @property
-    def uri(self) -> str:
-        """URI типа графических данных"""
-        return self._uri.value
-
-    @uri.setter
-    def uri(self, value: str):
-        self._uri = str(value)
-
-    @property
-    def tag(self):
-        return "a:graphicData"
-
-    @property
-    def access_children(self):
-        return []
-
-    @property
-    def access_property(self) -> list[dict]:
-        """Генерация XML атрибутов"""
-        if self._uri:
-            return [{"uri": self._uri}]
-        return []
+        return [
+            {"class": GraphicFrameLocks}
+        ]
 
 
 class Pic(BaseContainerTag):
@@ -649,13 +454,54 @@ class Pic(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
+        return [
+            {"class": NvPicPr},
+            {"class": BlipFill},
+            {"class": SpPr}
+        ]
+
+
+class GraphicData(BaseContainerTag):
+    """
+    DrawingML Graphic Data element
+    Содержит графические данные с указанием типа
+    """
+    __slots__ = ("_uri",)
+
+    def __init__(self, objects: Objects | list = None):
+        super().__init__(objects)
+        self._uri = URIGraphicData(
+            "http://schemas.openxmlformats.org/drawingml/2006/picture")
+
+    @property
+    def uri(self) -> str:
+        """URI типа графических данных"""
+        return self._uri.value
+
+    @uri.setter
+    def uri(self, value: str):
+        self._uri.value = str(value)
+
+    @property
+    def tag(self):
+        return "a:graphicData"
+
+    @property
+    def access_children(self):
         return []
 
+    @property
+    def access_property(self) -> list[dict]:
+        return [
+            {"class": Pic}
+            # todo here should be another tags
+        ]
 
-class NvPicPr(BaseContainerTag):
+
+class Graphic(BaseContainerTag):
     """
-    Non-Visual Picture Properties
-    Свойства изображения, не влияющие на отображение
+    DrawingML Graphic element
+    Основной контейнер для графических данных
     """
     __slots__ = ()
 
@@ -664,7 +510,7 @@ class NvPicPr(BaseContainerTag):
 
     @property
     def tag(self):
-        return "pic:nvPicPr"
+        return "a:graphic"
 
     @property
     def access_children(self):
@@ -672,7 +518,9 @@ class NvPicPr(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": GraphicData}
+        ]
 
 
 class CNvPr(BaseContentTag):
@@ -987,6 +835,32 @@ class PicLocks(BaseContentTag):
     @property
     def tag(self) -> str:
         return "a:picLocks"
+
+
+class NvPicPr(BaseContainerTag):
+    """
+    Non-Visual Picture Properties
+    Свойства изображения, не влияющие на отображение
+    """
+    __slots__ = ()
+
+    def __init__(self, objects: Objects | list = None):
+        super().__init__(objects)
+
+    @property
+    def tag(self):
+        return "pic:nvPicPr"
+
+    @property
+    def access_children(self):
+        return []
+
+    @property
+    def access_property(self) -> list[dict]:
+        return [
+            {"class": CNvPr},
+            {"class": CNvPicPr}
+        ]
 
 
 class BlipFill(BaseContainerTag):
@@ -1351,7 +1225,9 @@ class ExtLst(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": Ext}
+        ]
 
 
 class Ext(BaseContainerTag):
@@ -1381,25 +1257,27 @@ class Ext(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": UseLocalDpi}
+        ]
 
 
 class UseLocalDpi(BaseContentTag):
     """a14:useLocalDpi - использовать локальный DPI (Office 2010+)"""
 
-    __slots__ = ("_val",)
+    __slots__ = ("_dpi",)
 
     def __init__(self):
-        self._val = UseLocalDpiVal(UseLocalDpiVal.Options.use_system.value)
+        self._dpi= UseLocalDpiVal(UseLocalDpiVal.Options.use_system)
 
     @property
-    def val(self) -> str:
+    def dpi(self):
         """Значение атрибута val"""
-        return str(self._val.value)
+        return self._dpi.value
 
-    @val.setter
-    def val(self, value: bool):
-        self._val.value = str(int(value))
+    @dpi.setter
+    def dpi(self, value: bool):
+        self._dpi.value = UseLocalDpiVal.Options.use_local if value else UseLocalDpiVal.Options.use_system
 
     @property
     def tag(self) -> str:
@@ -1689,6 +1567,7 @@ class NoFill(BaseContentTag):
     def tag(self) -> str:
         return "a:noFill"
 
+
 class Ln(BaseContainerTag):
     """a:ln - обводка (контур) фигуры"""
 
@@ -1751,6 +1630,118 @@ class Ln(BaseContainerTag):
         return []
 
 
+class Inline(BaseContainerTag):
+    _slots__ = ("_objects", "_property", "_distT", "_distB", "_distL", "_distR", "_")
+
+    def __init__(self, objects: Objects | list = None):
+        super().__init__(objects)
+        self._distT = DistTop(0)
+        self._distB = DistBottom(0)
+        self._distL = DistLeft(0)
+        self._distR = DistRight(0)
+        self._anchorId = AnchorId(self.generate_random_id())
+        self._editId = EditId(self.generate_random_id())
+
+    @property
+    def dist_top(self):
+        return self._distT.value
+
+    @dist_top.setter
+    def dist_top(self, value):
+        """take value in centimeters"""
+
+        self._distT.value = Cm(value)
+
+    @property
+    def dist_bottom(self):
+        return self._distB.value
+
+    @dist_bottom.setter
+    def dist_bottom(self, value):
+        """take value in centimeters"""
+
+        self._distB.value = Cm(value)
+
+    @property
+    def dist_left(self):
+        return self._distL.value
+
+    @dist_left.setter
+    def dist_left(self, value):
+        """take value in centimeters"""
+
+        self._distL.value = Cm(value)
+
+    @property
+    def dist_right(self):
+        return self._distR.value
+
+    @dist_right.setter
+    def dist_right(self, value):
+        """take value in centimeters"""
+
+        self._distR.value = Cm(value)
+
+    @property
+    def anchor_id(self):
+        """wp14:anchorId"""
+        return self._anchorId.value
+
+    @anchor_id.setter
+    def anchor_id(self, value):
+        self._anchorId.value = value
+
+    @property
+    def edit_id(self):
+        """wp14:editId"""
+
+        return self._editId.value
+
+    @edit_id.setter
+    def edit_id(self, value):
+        self._editId.value = value
+
+    def set_distances(self, top=0, bottom=0, left=0, right=0):
+        """Установить все отступы одновременно"""
+
+        self.dist_top = top
+        self.dist_bottom = bottom
+        self.dist_left = left
+        self.dist_right = right
+
+    def set_all_distances(self, value):
+        """Установить одинаковые отступы со всех сторон"""
+
+        self.dist_top = value
+        self.dist_bottom = value
+        self.dist_left = value
+        self.dist_right = value
+
+    @staticmethod
+    def generate_random_id():
+        """Сгенерировать случайный Id"""
+
+        return uuid.uuid4().hex[:8].upper()
+
+    @property
+    def tag(self):
+        return "wp:inline"
+
+    @property
+    def access_children(self):
+        return []
+
+    @property
+    def access_property(self) -> list[dict]:
+        return [
+            {"class": Extent},
+            {"class": EffectExtent},
+            {"class": DocProperties},
+            {"class": CNvGraphicFramePr},
+            {"class": Graphic},
+        ]
+
+
 class Drawing(BaseContainerTag):
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
@@ -1765,4 +1756,6 @@ class Drawing(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": Inline},
+        ]

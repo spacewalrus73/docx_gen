@@ -4,7 +4,7 @@ from enum import Enum
 
 class ImageHidden(EnumAttribute):
 
-    def __init__(self, value: str):
+    def __init__(self, value: "ImageHidden.Options"):
         super().__init__(value=value, xml_name="hidden")
 
     class Options(Enum):
@@ -13,7 +13,7 @@ class ImageHidden(EnumAttribute):
 
 
 class ImageId(SimpleAttribute):
-    def __init__(self, value: int):
+    def __init__(self, value: str):
         super().__init__(value=value, xml_name="id")
 
 
@@ -33,15 +33,15 @@ class ImageTitle(SimpleAttribute):
 
 
 
-class URIGraphicData(EnumAttribute):
-    class Options(Enum):
-        pic = "http://schemas.openxmlformats.org/drawingml/2006/picture"
-        chart = "http://schemas.openxmlformats.org/drawingml/2006/chart"
-        diagram = "http://schemas.openxmlformats.org/drawingml/2006/diagram"
-        smartart = "http://schemas.microsoft.com/office/drawing/2010/main"
-        drawing = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
-        model = "http://schemas.microsoft.com/office/drawing/2017/model3d"
-        ink = "http://schemas.microsoft.com/office/drawing/2016/ink"
+class URIGraphicData(SimpleAttribute):
+    # class Options(Enum):
+    #     pic = "http://schemas.openxmlformats.org/drawingml/2006/picture"
+    #     chart = "http://schemas.openxmlformats.org/drawingml/2006/chart"
+    #     diagram = "http://schemas.openxmlformats.org/drawingml/2006/diagram"
+    #     smartart = "http://schemas.microsoft.com/office/drawing/2010/main"
+    #     drawing = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+    #     model = "http://schemas.microsoft.com/office/drawing/2017/model3d"
+    #     ink = "http://schemas.microsoft.com/office/drawing/2016/ink"
 
     def __init__(self, value: str):
         super().__init__(value=value, xml_name="uri")
@@ -61,7 +61,7 @@ class Dpi(SimpleAttribute):
 class UseLocalDpiVal(EnumAttribute):
     """Значение для useLocalDpi"""
 
-    def __init__(self, value: str = "0"):
+    def __init__(self, value: "UseLocalDpiVal.Options"):
         super().__init__(value=value, xml_name="val")
 
     class Options(Enum):

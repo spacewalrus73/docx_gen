@@ -43,14 +43,19 @@ def make_xml_tree(cls_element: BaseTag) -> etree.Element:
 
 def declare_attrib(xml_elem: etree._Element, cls_obj: BaseTag):
     for attr, val in xml_elem.attrib.items():
-        attr_name = NamespacePrefixedTag.from_clark_name(attr).split(":")[1]
+        print(attr, "3333333333")
+        qn_attr = NamespacePrefixedTag.from_clark_name(attr)
+        attr_name = qn_attr.split(":")[1] if ":" in qn_attr else qn_attr
+
         if hasattr(cls_obj, attr_name):
             property_attr = getattr(type(cls_obj), attr_name)
             property_attr.__set__(cls_obj, val)
 
 
 def read_xml_markup(xml_tree: etree.ElementBase):
+    print(NamespacePrefixedTag.from_clark_name(xml_tree.tag), "11111111111")
     tag = get_cls_by_tag(NamespacePrefixedTag.from_clark_name(xml_tree.tag))
+    print(tag, "2222222222")
     if not tag:
         warnings.warn(f"{xml_tree} object is not readable", stacklevel=2)
         return None
@@ -73,9 +78,10 @@ def read_xml_markup(xml_tree: etree.ElementBase):
             ))
 
             if len(access_property) > 0:
-                position = access_property[0].get("required_position")
+                position = access_property[0].get("required_position") or 0
                 obj.property.insert(position, cls_object)
             else:
+                print(obj, "444444444")
                 obj.objects.append(cls_object)
     return obj
 
