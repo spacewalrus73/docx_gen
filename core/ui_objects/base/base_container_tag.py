@@ -89,10 +89,10 @@ class BaseContainerTag(BaseTag):
         position = self._get_property_position(property)
         self.property[position] = property
 
-    def _get_property_position(self, property: BaseTag) -> int:
+    def _get_property_position(self, property: BaseTag | type[BaseTag]) -> int:
         return self._get_property_class(property).get("required_position")
 
-    def _get_property_class(self, property: BaseTag):
+    def _get_property_class(self, property: BaseTag | type[BaseTag]):
         try:
             return list(
                 filter(
@@ -107,8 +107,12 @@ class BaseContainerTag(BaseTag):
             ) from index_error
 
     @staticmethod
-    def _is_class_property(item: dict, property: BaseTag) -> bool:
-        return isinstance(property, item.get("class"))
+    def _is_class_property(item: dict, property: BaseTag | type[BaseTag]) -> bool:
+        cls = item.get("class")
+        return isinstance(property, cls) or issubclass(property, cls)
 
     def _get_property_classes(self):
         return [i.get("class").__name__ for i in self.access_property]
+
+    def _get_property(self, prop: BaseTag | type[BaseTag]) -> BaseTag:
+        return self.property[self._get_property_position(prop)]
