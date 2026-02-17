@@ -35,7 +35,9 @@ class BaseTag(ABC):
                 and isinstance(attribute, BaseAttribute)
                 and attribute.value is not None
             ):
-                attrs[qn(attribute.xml_name)] = attribute.value
+                _value = attribute.value
+                value = _value if isinstance(_value, str) else str(_value)
+                attrs[qn(attribute.xml_name)] = value
         return attrs
 
     def get_attribute(self, attribute: str) -> Any:
