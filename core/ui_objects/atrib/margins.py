@@ -1,31 +1,32 @@
-from core.ui_objects.base.base_attribute import SimpleAttribute
+from core.ui_objects.base.base_attribute import TwipsAttribute
+from core.utils.metrics import Twips
 
 
-class Top(SimpleAttribute):
-    def __init__(self, value: int):
+class Top(TwipsAttribute):
+    def __init__(self, value: Twips):
         super().__init__(value=value, xml_name="w:top")
 
 
-class Left(SimpleAttribute):
-    def __init__(self, value: int):
+class Left(TwipsAttribute):
+    def __init__(self, value: Twips):
         super().__init__(value=value, xml_name="w:left")
 
 
-class Right(SimpleAttribute):
-    def __init__(self, value: int):
+class Right(TwipsAttribute):
+    def __init__(self, value: Twips):
         super().__init__(value=value, xml_name="w:right")
 
 
-class Bottom(SimpleAttribute):
-    def __init__(self, value: int):
+class Bottom(TwipsAttribute):
+    def __init__(self, value: Twips):
         super().__init__(value=value, xml_name="w:bottom")
 
 
-class Space(SimpleAttribute):
-    def __init__(self, value: int):
+class Space(TwipsAttribute):
+    def __init__(self, value: Twips):
         super().__init__(value=value, xml_name="w:space")
 
 
-class LinePitch(SimpleAttribute):
-    def __init__(self, value: int):
+class LinePitch(TwipsAttribute):
+    def __init__(self, value: Twips):
         super().__init__(value=value, xml_name="w:linePitch")

@@ -1,11 +1,12 @@
-from core.ui_objects.base.base_attribute import SimpleAttribute
+from core.ui_objects.base.base_attribute import TwipsAttribute
+from core.utils.metrics import Length
 
 
-class Height(SimpleAttribute):
-    def __init__(self, value: int):
+class Height(TwipsAttribute):
+    def __init__(self, value: Length):
         super().__init__(value=value, xml_name="w:h")
 
 
-class Width(SimpleAttribute):
-    def __init__(self, value: int):
+class Width(TwipsAttribute):
+    def __init__(self, value: Length):
         super().__init__(value=value, xml_name="w:w")
