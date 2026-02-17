@@ -4,7 +4,7 @@ from enum import Enum
 
 class GraphicFrameLocksNS(SimpleAttribute):
     def __init__(self, value: str):
-        super().__init__(value=value, xml_name="title")
+        super().__init__(value=value, xml_name="xmlns:a")
 
 
 class NoChangeAspect(EnumAttribute):

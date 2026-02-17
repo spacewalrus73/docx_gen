@@ -67,3 +67,7 @@ class UseLocalDpiVal(EnumAttribute):
     class Options(Enum):
         use_system = "0"  # Использовать системный DPI
         use_local = "1"  # Использовать локальный DPI из файла
+
+class UseLocalDpiNS(SimpleAttribute):
+    def __init__(self, value: str):
+        super().__init__(value=value, xml_name='xmlns:a14')

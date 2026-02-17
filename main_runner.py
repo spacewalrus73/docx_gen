@@ -14,3 +14,7 @@ bo = doc.objects[0].objects[0].objects[0].objects[1].objects
 print(bo)
 
 print(bo)
+
+#todo uri:useLocalDp делает голову потому что не может сформироваться смотреть логи консоли
+#todo Blip: <a:blip исправить енумы по вычисленной методике
+

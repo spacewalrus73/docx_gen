@@ -9,39 +9,39 @@ class LineWidth(SimpleAttribute):
         super().__init__(value=value, xml_name="w")
 
 
-class LineCap(EnumAttribute):
+class LineCap(SimpleAttribute):
     """Тип окончания линии"""
 
     def __init__(self, value: str = "flat"):
         super().__init__(value=value, xml_name="cap")
 
-    class Options(Enum):
-        flat = "flat"  # Прямое окончание
-        round = "round"  # Скругленное окончание
-        square = "square"  # Квадратное окончание
+    # class Options(Enum):
+    #     flat = "flat"  # Прямое окончание
+    #     round = "round"  # Скругленное окончание
+    #     square = "square"  # Квадратное окончание
 
 
-class LineCmpd(EnumAttribute):
+class LineCmpd(SimpleAttribute):
     """Составная линия"""
 
     def __init__(self, value: str = "sng"):
         super().__init__(value=value, xml_name="cmpd")
 
-    class Options(Enum):
-        sng = "sng"  # Одинарная
-        dbl = "dbl"  # Двойная
-        thickThin = "thickThin"  # Толстая-тонкая
-        thinThick = "thinThick"  # Тонкая-толстая
-        tri = "tri"  # Тройная
+    # class Options(Enum):
+    #     sng = "sng"  # Одинарная
+    #     dbl = "dbl"  # Двойная
+    #     thickThin = "thickThin"  # Толстая-тонкая
+    #     thinThick = "thinThick"  # Тонкая-толстая
+    #     tri = "tri"  # Тройная
 
 
-class LineAlign(EnumAttribute):
+class LineAlign(SimpleAttribute):
     """Выравнивание линии"""
 
     def __init__(self, value: str = "ctr"):
         super().__init__(value=value, xml_name="algn")
 
-    class Options(Enum):
-        ctr = "ctr"  # По центру границы фигуры
-        in_ = "in"  # Внутри границы фигуры
-        out = "out"  # Снаружи границы фигуры
+    # class Options(Enum):
+    #     ctr = "ctr"  # По центру границы фигуры
+    #     in_ = "in"  # Внутри границы фигуры
+    #     out = "out"  # Снаружи границы фигуры

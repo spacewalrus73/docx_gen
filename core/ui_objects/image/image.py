@@ -21,7 +21,8 @@ from core.ui_objects.atrib.image.image import (
     Dpi,
     URIGraphicData,
     URIExt,
-    UseLocalDpiVal
+    UseLocalDpiVal,
+    UseLocalDpiNS
 )
 from core.ui_objects.atrib.image.graphic_frame_locks import (
     NoChangeAspect,
@@ -531,20 +532,20 @@ class CNvPr(BaseContentTag):
     __slots__ = ("_id", "_name", "_description", "_title", "_hidden")
 
     def __init__(self):
-        self.id = ObjectId(0)
-        self.name = ObjectName("")
-        self.description = ObjectDescr("")
-        self.title = ObjectTitle("")
-        self.hidden = ObjectHidden(ObjectHidden.Options.visible.value)
+        self._id = ObjectId("0")
+        self._name = ObjectName("")
+        self._description = ObjectDescr("")
+        self._title = ObjectTitle("")
+        self._hidden = ObjectHidden(ObjectHidden.Options.hidden)
 
     @property
-    def id(self) -> int:
+    def id(self) -> str:
         """Идентификатор объекта"""
         return self._id.value
 
     @id.setter
-    def id(self, value: int):
-        self._id.value = int(value)
+    def id(self, value: str):
+        self._id.value = str(value)
 
     @property
     def name(self) -> str:
@@ -580,7 +581,7 @@ class CNvPr(BaseContentTag):
 
     @hidden.setter
     def hidden(self, value: bool):
-        self._hidden.value = bool(value)
+        self._hidden.value = ObjectHidden.Options.hidden if value else ObjectHidden.Options.visible
 
     @property
     def tag(self) -> str:
@@ -607,7 +608,10 @@ class CNvPicPr(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": PicLocks},
+            {"class": ExtLst}
+        ]
 
 
 class PicLocks(BaseContentTag):
@@ -622,25 +626,25 @@ class PicLocks(BaseContentTag):
     def __init__(self):
         """Блокировка изменения пропорций (1 = да, 0 = нет)"""
 
-        self.no_change_aspect = NoChangeAspect("0")
-        self.no_change_arrowheads = NoChangeArrowheads("0")
-        self.no_change_start = NoChangeStart("0")
-        self.no_change_end = NoChangeEnd("0")
-        self.no_edit_points = NoEditPoints("0")
-        self.no_adjust_handles = NoAdjustHandles("0")
-        self.no_change_shape_type = NoChangeShapeType("0")
-        self.no_change_shape_type = NoChangeShapeType("0")
-        self.no_move = NoMove("0")
-        self.no_resize = NoResize("0")
-        self.no_rotate = NoRotate("0")
-        self.no_select = NoSelect("0")
-        self.no_crop = NoCrop("0")
-        self.no_change_bullet = NoChangeBullet("0")
-        self.no_grp = NoGrp("0")
-        self.no_ungrp = NoUngrp("0")
-        self.no_drill_down = NoDrilldown("0")
-        self.no_text_edit = NoTextEdit("0")
-        self.xmlns = GraphicFrameLocksNS("")
+        self._no_change_aspect = NoChangeAspect(NoChangeAspect.Options.access)
+        self._no_change_arrowheads = NoChangeArrowheads(
+            NoChangeArrowheads.Options.access)
+        self._no_change_start = NoChangeStart(NoChangeStart.Options.access)
+        self._no_change_end = NoChangeEnd(NoChangeEnd.Options.access)
+        self._no_edit_points = NoEditPoints(NoEditPoints.Options.access)
+        self._no_adjust_handles = NoAdjustHandles(NoAdjustHandles.Options.access)
+        self._no_change_shape_type = NoChangeShapeType(NoChangeShapeType.Options.access)
+        self._no_move = NoMove(NoMove.Options.access)
+        self._no_resize = NoResize(NoResize.Options.access)
+        self._no_rotate = NoRotate(NoRotate.Options.access)
+        self._no_select = NoSelect(NoSelect.Options.access)
+        self._no_crop = NoCrop(NoCrop.Options.access)
+        self._no_change_bullet = NoChangeBullet(NoChangeBullet.Options.access)
+        self._no_grp = NoGrp(NoGrp.Options.access)
+        self._no_ungrp = NoUngrp(NoUngrp.Options.access)
+        self._no_drill_down = NoDrilldown(NoDrilldown.Options.access)
+        self._no_text_edit = NoTextEdit(NoTextEdit.Options.access)
+        self._xmlns = GraphicFrameLocksNS("")
 
     @property
     def no_change_aspect(self):
@@ -648,7 +652,7 @@ class PicLocks(BaseContentTag):
 
     @no_change_aspect.setter
     def no_change_aspect(self, value: bool):
-        self._no_change_aspect.value = "1" if value else "0"
+        self._no_change_aspect.value = NoChangeAspect.Options.restrict if value else NoChangeAspect.Options.access
 
     @property
     def no_change_arrowheads(self):
@@ -656,7 +660,7 @@ class PicLocks(BaseContentTag):
 
     @no_change_arrowheads.setter
     def no_change_arrowheads(self, value: bool):
-        self._no_change_arrowheads.value = "1" if value else "0"
+        self._no_change_arrowheads.value = NoChangeArrowheads.Options.restrict if value else NoChangeArrowheads.Options.access
 
     @property
     def no_change_start(self):
@@ -665,7 +669,7 @@ class PicLocks(BaseContentTag):
 
     @no_change_start.setter
     def no_change_start(self, value: bool):
-        self._no_change_start.value = "1" if value else "0"
+        self._no_change_start.value = NoChangeStart.Options.restrict if value else NoChangeStart.Options.access
 
     @property
     def no_change_end(self):
@@ -674,7 +678,7 @@ class PicLocks(BaseContentTag):
 
     @no_change_end.setter
     def no_change_end(self, value: bool):
-        self._no_change_end.value = "1" if value else "0"
+        self._no_change_end.value = NoChangeEnd.Options.restrict if value else NoChangeEnd.Options.access
 
     @property
     def no_edit_points(self):
@@ -683,7 +687,7 @@ class PicLocks(BaseContentTag):
 
     @no_edit_points.setter
     def no_edit_points(self, value: bool):
-        self._no_edit_points.value = "1" if value else "0"
+        self._no_edit_points.value = NoEditPoints.Options.restrict if value else NoEditPoints.Options.access
 
     @property
     def no_adjust_handles(self):
@@ -692,7 +696,7 @@ class PicLocks(BaseContentTag):
 
     @no_adjust_handles.setter
     def no_adjust_handles(self, value: bool):
-        self._no_adjust_handles.value = "1" if value else "0"
+        self._no_adjust_handles.value = NoAdjustHandles.Options.restrict if value else NoAdjustHandles.Options.access
 
     @property
     def no_change_shape_type(self):
@@ -701,7 +705,7 @@ class PicLocks(BaseContentTag):
 
     @no_change_shape_type.setter
     def no_change_shape_type(self, value: bool):
-        self._no_change_shape_type.value = "1" if value else "0"
+        self._no_change_shape_type.value = NoChangeShapeType.Options.restrict if value else NoChangeShapeType.Options.access
 
     @property
     def no_move(self):
@@ -710,7 +714,7 @@ class PicLocks(BaseContentTag):
 
     @no_move.setter
     def no_move(self, value: bool):
-        self._no_move.value = "1" if value else "0"
+        self._no_move.value = NoMove.Options.restrict if value else NoMove.Options.access
 
     @property
     def no_resize(self):
@@ -719,7 +723,7 @@ class PicLocks(BaseContentTag):
 
     @no_resize.setter
     def no_resize(self, value: bool):
-        self._no_resize.value = "1" if value else "0"
+        self._no_resize.value = NoResize.Options.restrict if value else NoResize.Options.access
 
     @property
     def no_rotate(self):
@@ -728,7 +732,7 @@ class PicLocks(BaseContentTag):
 
     @no_rotate.setter
     def no_rotate(self, value: bool):
-        self._no_rotate.value = "1" if value else "0"
+        self._no_rotate.value = NoRotate.Options.restrict if value else NoRotate.Options.access
 
     @property
     def no_select(self):
@@ -737,7 +741,7 @@ class PicLocks(BaseContentTag):
 
     @no_select.setter
     def no_select(self, value: bool):
-        self._no_select.value = "1" if value else "0"
+        self._no_select.value = NoSelect.Options.restrict if value else NoSelect.Options.access
 
     @property
     def no_crop(self):
@@ -746,7 +750,7 @@ class PicLocks(BaseContentTag):
 
     @no_crop.setter
     def no_crop(self, value: bool):
-        self._no_crop.value = "1" if value else "0"
+        self._no_crop.value = NoCrop.Options.restrict if value else NoCrop.Options.access
 
     @property
     def no_change_bullet(self):
@@ -755,7 +759,7 @@ class PicLocks(BaseContentTag):
 
     @no_change_bullet.setter
     def no_change_bullet(self, value: bool):
-        self._no_change_bullet.value = "1" if value else "0"
+        self._no_change_bullet.value = NoChangeBullet.Options.restrict if value else NoChangeBullet.Options.access
 
     @property
     def no_grp(self):
@@ -764,7 +768,7 @@ class PicLocks(BaseContentTag):
 
     @no_grp.setter
     def no_grp(self, value: bool):
-        self._no_grp.value = "1" if value else "0"
+        self._no_grp.value = NoGrp.Options.restrict if value else NoGrp.Options.access
 
     @property
     def no_ungrp(self):
@@ -773,7 +777,7 @@ class PicLocks(BaseContentTag):
 
     @no_ungrp.setter
     def no_ungrp(self, value: bool):
-        self._no_ungrp.value = "1" if value else "0"
+        self._no_ungrp.value = NoUngrp.Options.restrict if value else NoUngrp.Options.access
 
     @property
     def no_drill_down(self):
@@ -782,7 +786,7 @@ class PicLocks(BaseContentTag):
 
     @no_drill_down.setter
     def no_drill_down(self, value: bool):
-        self._no_drill_down.value = "1" if value else "0"
+        self._no_drill_down.value = NoDrilldown.Options.restrict if value else NoDrilldown.Options.access
 
     @property
     def no_text_edit(self):
@@ -791,7 +795,7 @@ class PicLocks(BaseContentTag):
 
     @no_text_edit.setter
     def no_text_edit(self, value: bool):
-        self._no_text_edit.value = "1" if value else "0"
+        self._no_text_edit.value = NoTextEdit.Options.restrict if value else NoTextEdit.Options.access
 
     @property
     def xmlns(self):
@@ -801,36 +805,6 @@ class PicLocks(BaseContentTag):
     @xmlns.setter
     def xmlns(self, value: str):
         self._xmlns.value = value
-
-    def lock_all(self):
-        """Заблокировать все изменения"""
-        self.no_change_aspect.value = 1
-        self.no_change_arrowheads.value = 1
-        self.no_change_start.value = 1
-        self.no_change_end.value = 1
-        self.no_edit_points.value = 1
-        self.no_adjust_handles.value = 1
-        self.no_change_shape_type.value = 1
-        self.no_move.value = 1
-        self.no_resize.value = 1
-        self.no_rotate.value = 1
-        self.no_select.value = 1
-        self.no_crop.value = 1
-
-    def unlock_all(self):
-        """Разблокировать все изменения"""
-        self.no_change_aspect.value = 0
-        self.no_change_arrowheads.value = 0
-        self.no_change_start.value = 0
-        self.no_change_end.value = 0
-        self.no_edit_points.value = 0
-        self.no_adjust_handles.value = 0
-        self.no_change_shape_type.value = 0
-        self.no_move.value = 0
-        self.no_resize.value = 0
-        self.no_rotate.value = 0
-        self.no_select.value = 0
-        self.no_crop.value = 0
 
     @property
     def tag(self) -> str:
@@ -890,7 +864,11 @@ class BlipFill(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": Blip},
+            {"class": SrcRect},
+            {"class": Stretch}
+        ]
 
 
 class Blip(BaseContainerTag):
@@ -905,11 +883,10 @@ class Blip(BaseContainerTag):
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
 
-        # Инициализация атрибутов
         self._embed = Embed("")
-        self._cstate = CState("print")  # print, screen, hq, always
+        self._cstate = CState("print")
         self._alpha_mod = AlphaMod("100000")
-        self._alpha_mod_fix = AlphaModFix(None)  # Опционально
+        self._alpha_mod_fix = AlphaModFix("")
         self._gain = Gain("0")
         self._black_level = BlackLevel("0")
         self._gamma = Gamma("0")
@@ -931,8 +908,8 @@ class Blip(BaseContainerTag):
         self._cont_mod = ContMod("100000")
         self._sharp = Sharp("0")
         self._tint = Tint("0")
-        self._bu_clr = BuClr("")  # Опционально
-        self._bu_clr_tx = BuClrTx("")  # Опционально
+        self._bu_clr = BuClr("")
+        self._bu_clr_tx = BuClrTx("")
 
     # ========== ОСНОВНЫЕ АТРИБУТЫ ==========
 
@@ -1181,7 +1158,9 @@ class Blip(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": ExtLst}
+        ]
 
     # ----- Удобные методы -----
 
@@ -1265,10 +1244,11 @@ class Ext(BaseContainerTag):
 class UseLocalDpi(BaseContentTag):
     """a14:useLocalDpi - использовать локальный DPI (Office 2010+)"""
 
-    __slots__ = ("_dpi",)
+    __slots__ = ("_dpi", "_xmlns")
 
     def __init__(self):
-        self._dpi= UseLocalDpiVal(UseLocalDpiVal.Options.use_system)
+        self._dpi = UseLocalDpiVal(UseLocalDpiVal.Options.use_system)
+        self._xmlns = UseLocalDpiNS("")
 
     @property
     def dpi(self):
@@ -1278,6 +1258,14 @@ class UseLocalDpi(BaseContentTag):
     @dpi.setter
     def dpi(self, value: bool):
         self._dpi.value = UseLocalDpiVal.Options.use_local if value else UseLocalDpiVal.Options.use_system
+
+    @property
+    def xmlns(self):
+        return self._xmlns.value
+
+    @xmlns.setter
+    def xmlns(self, value: str):
+        self._xmlns.value = value
 
     @property
     def tag(self) -> str:
@@ -1348,7 +1336,9 @@ class Stretch(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": FillRect}
+        ]
 
 
 class FillRect(BaseContentTag):
@@ -1376,7 +1366,14 @@ class SpPr(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": Xfrm},
+            {"class": PrstGeom},
+            {"class": NoFill},
+            {"class": BlipFill},
+            {"class": Ln},
+            {"class": ExtLst},
+        ]
 
 
 class Xfrm(BaseContainerTag):
@@ -1386,18 +1383,15 @@ class Xfrm(BaseContainerTag):
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
-        # Позиция (offset)
         self._off_x = OffX("0")
         self._off_y = OffY("0")
 
-        # Размер (extent)
         self._ext_cx = ExtCx("0")
         self._ext_cy = ExtCy("0")
 
-        # Вращение и отражение
-        self._rot = Rot("")  # Опционально
-        self._flip_h = FlipH(FlipH.Options.no_flip.value)
-        self._flip_v = FlipV(FlipV.Options.no_flip.value)
+        self._rot = Rot("")
+        self._flip_h = FlipH(FlipH.Options.no_flip)
+        self._flip_v = FlipV(FlipV.Options.no_flip)
 
     @property
     def off_x(self) -> str:
@@ -1472,7 +1466,10 @@ class Xfrm(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {'class': Off},
+            {'class': Ext}
+        ]
 
 
 class Off(BaseContentTag):
@@ -1532,7 +1529,9 @@ class PrstGeom(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": AvLst},
+        ]
 
     @property
     def prst(self) -> str:
@@ -1548,10 +1547,10 @@ class PrstGeom(BaseContainerTag):
         return "a:prstGeom"
 
 
-class avLst(BaseContentTag):
+class AvLst(BaseContentTag):
     """a:avLst - список регулировок для предустановленных форм"""
 
-    __slots__ = ("_type", "_clear")
+    __slots__ = ()
 
     @property
     def tag(self) -> str:
@@ -1575,11 +1574,10 @@ class Ln(BaseContainerTag):
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
-        # Атрибуты линии
-        self._width = LineWidth("9525")  # Ширина (по умолчанию 1 pt = 9525 EMU)
-        self._cap = LineCap("flat")  # Тип окончания линии
-        self._cmpd = LineCmpd("sng")  # Составная линия
-        self._align = LineAlign("ctr")  # Выравнивание
+        self._width = LineWidth("9525")
+        self._cap = LineCap("flat")
+        self._cmpd = LineCmpd("sng")
+        self._align = LineAlign("ctr")
 
     @property
     def width(self) -> str:
@@ -1627,7 +1625,10 @@ class Ln(BaseContainerTag):
 
     @property
     def access_property(self) -> list[dict]:
-        return []
+        return [
+            {"class": NoFill},
+            {"class": ExtLst},
+        ]
 
 
 class Inline(BaseContainerTag):

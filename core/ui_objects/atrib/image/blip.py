@@ -33,7 +33,7 @@ class AlphaMod(SimpleAttribute):
 class AlphaModFix(SimpleAttribute):
     """Фиксированный модификатор прозрачности (0-100000)"""
 
-    def __init__(self, value: str = None):
+    def __init__(self, value: str = ""):
         super().__init__(value=value, xml_name="alphaModFix")
 
 
@@ -51,11 +51,6 @@ class BlackLevel(SimpleAttribute):
 
     def __init__(self, value: str = "0"):
         super().__init__(value=value, xml_name="blackLevel")
-
-    def validate(self, value: str):
-        val = int(value)
-        if not 0 <= val <= 100000:
-            raise ValueError(f"blackLevel должен быть от 0 до 100000, получено: {val}")
 
 
 class Gamma(SimpleAttribute):

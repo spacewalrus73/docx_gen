@@ -46,7 +46,7 @@ class Rot(SimpleAttribute):
 class FlipH(EnumAttribute):
     """Отражение по горизонтали"""
 
-    def __init__(self, value: str = "0"):
+    def __init__(self, value: "FlipH.Options"):
         super().__init__(value=value, xml_name="flipH")
 
     class Options(Enum):
@@ -57,7 +57,7 @@ class FlipH(EnumAttribute):
 class FlipV(EnumAttribute):
     """Отражение по вертикали"""
 
-    def __init__(self, value: str = "0"):
+    def __init__(self, value: "FlipV.Options"):
         super().__init__(value=value, xml_name="flipV")
 
     class Options(Enum):
