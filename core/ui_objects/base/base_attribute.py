@@ -152,29 +152,31 @@ class SimpleAttribute(BaseAttribute):
         else:
             TypeError(f"another must be str or int not {type(another)}")
 
-    @property
-    def xml_name(self):
-        return self._xml_name
-
 
 class SizeAttribute(BaseAttribute):
-    def __init__(self, xml_name: str, value: Length | Twips):
+    def __init__(self, xml_name: str, value: Length):
         self.value = value
         super().__init__(xml_name)
 
     @property
-    def value(self) -> int:
+    def value(self) -> Length:
         return self._value
 
     @value.setter
-    def value(self, another: Twips | Length):
-        if isinstance(another, Twips):
-            self._value = another
-        elif isinstance(another, Length):
-            self._value = Twips(another)
-        else:
-            TypeError(f"another must be str or int not {type(another)}")
+    def value(self, new_value: Length):
+        if isinstance(new_value, Length):
+            self._value = new_value
+        TypeError(f"value must be Length not {type(new_value)}")
+
+
+class TwipsAttribute(SizeAttribute):
+    def __init__(self, xml_name: str, value: Length):
+        super().__init__(xml_name, value)
 
     @property
-    def xml_name(self):
-        return self._xml_name
+    def value(self) -> Twips:
+        return self._value.twips
+
+    @value.setter
+    def value(self, new_value: Length):
+        SizeAttribute.value.fset(self, new_value)
