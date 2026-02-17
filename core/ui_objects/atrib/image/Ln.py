@@ -6,14 +6,14 @@ class LineWidth(SimpleAttribute):
     """Ширина линии в EMU"""
 
     def __init__(self, value: str = "9525"):
-        super().__init__(value=value, xml_name="w")
+        super().__init__(value=value, xml_name="a:w")
 
 
 class LineCap(SimpleAttribute):
     """Тип окончания линии"""
 
     def __init__(self, value: str = "flat"):
-        super().__init__(value=value, xml_name="cap")
+        super().__init__(value=value, xml_name="a:cap")
 
     # class Options(Enum):
     #     flat = "flat"  # Прямое окончание
@@ -25,7 +25,7 @@ class LineCmpd(SimpleAttribute):
     """Составная линия"""
 
     def __init__(self, value: str = "sng"):
-        super().__init__(value=value, xml_name="cmpd")
+        super().__init__(value=value, xml_name="a:cmpd")
 
     # class Options(Enum):
     #     sng = "sng"  # Одинарная
@@ -39,7 +39,7 @@ class LineAlign(SimpleAttribute):
     """Выравнивание линии"""
 
     def __init__(self, value: str = "ctr"):
-        super().__init__(value=value, xml_name="algn")
+        super().__init__(value=value, xml_name="a:align")
 
     # class Options(Enum):
     #     ctr = "ctr"  # По центру границы фигуры

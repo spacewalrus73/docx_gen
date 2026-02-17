@@ -26,7 +26,7 @@ nsmap = {
     "mc": "http://schemas.openxmlformats.org/markup-compatibility/2006",
     "wp14": "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing",
     "uri": "http://schemas.microsoft.com/office/drawing/2010/main",
-    "": ""
+    "xmlns": "http://schemas.openxmlformats.org/drawingml/2006/main"
 }
 
 pfxmap = {value: key for key, value in nsmap.items()}
@@ -41,21 +41,18 @@ class NamespacePrefixedTag(str):
         return super().__new__(cls, nstag)
 
     def __init__(self, nstag: str):
-        self._pfx, self._local_part = nstag.split(":") if ":" in nstag else ("", nstag)
+        self._pfx, self._local_part = nstag.split(":")
+        print(self._local_part, "5555555555555")
         self._ns_uri = nsmap[self._pfx]
 
     @property
     def clark_name(self) -> str:
-        if self._ns_uri == "":
-            return self._local_part
         return f"{{{self._ns_uri}}}{self._local_part}"
 
     @classmethod
     def from_clark_name(cls, clark_name: str) -> NamespacePrefixedTag:
-        if clark_name.startswith("{"):
-            nsuri, local_name = clark_name[1:].split("}")
-            return cls(f"{pfxmap[nsuri]}:{local_name}")
-        return cls(clark_name)
+        nsuri, local_name = clark_name[1:].split("}")
+        return cls(f"{pfxmap[nsuri]}:{local_name}")
 
 
 
@@ -66,11 +63,14 @@ def qn(tag: str) -> str:
     into a Clark-notation qualified tag name for lxml. For example, `qn("w:p")` returns
     "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}p".
     """
-    if ":" in tag:
-        prefix, tagroot = tag.split(":")
-        uri = nsmap[prefix]
-        return f"{{{uri}}}{tagroot}"
-    return tag
+    prefix, tagroot = tag.split(":")
+    print(tag,"****************")
+    uri = nsmap[prefix]
+    return f"{{{uri}}}{tagroot}"
+
+
+
+
 
 
 class XmlString(str):

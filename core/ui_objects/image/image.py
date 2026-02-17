@@ -4,10 +4,10 @@ from core.ui_objects.base.linked_objects import Objects
 from core.ui_objects.atrib.margins import DistTop, DistRight, DistLeft, DistBottom
 from core.ui_objects.atrib.ids import AnchorId, EditId
 import uuid
-from core.utils.metrics import Cm
 from core.ui_objects.atrib.size import CX, CY
 from core.ui_objects.atrib.size import EffectLeft, EffectRight, EffectTop, EffectBottom
-from core.ui_objects.atrib.image.xfrm import OffX, OffY, ExtCx, ExtCy, Rot, FlipH, FlipV
+from core.ui_objects.atrib.image.xfrm import OffX, OffY, ExtCx, ExtCy, Rot, FlipH, \
+    FlipV, BwMode
 from core.ui_objects.atrib.image.PrstGeom import Prst
 from core.ui_objects.atrib.offset import X, Y
 from core.ui_objects.atrib.image.Ln import LineCap, LineCmpd, LineAlign, LineWidth
@@ -64,8 +64,8 @@ class Extent(BaseContentTag):
     __slots__ = ("_width", "_height")
 
     def __init__(self):
-        self._width = CX(Cm(21))
-        self._height = CY(Cm(11))
+        self._width = CX("0")
+        self._height = CY("0")
 
     @property
     def width(self):
@@ -75,7 +75,7 @@ class Extent(BaseContentTag):
     def width(self, value):
         """take value in centimeters"""
 
-        self._width.value = Cm(value)
+        self._width.value = value
 
     @property
     def height(self):
@@ -85,7 +85,7 @@ class Extent(BaseContentTag):
     def height(self, value):
         """take value in centimeters"""
 
-        self._height.value = Cm(value)
+        self._height.value = value
 
     def set_distances(self, width=10, height=10):
         """Установить все отступы одновременно"""
@@ -103,10 +103,10 @@ class EffectExtent(BaseContentTag):
     __slots__ = ("_left", "_top", "_right", "_bottom")
 
     def __init__(self):
-        self._left = EffectLeft(Cm(0))
-        self._top = EffectTop(Cm(0))
-        self._right = EffectRight(Cm(0))
-        self._bottom = EffectBottom(Cm(0))
+        self._left = EffectLeft("0")
+        self._top = EffectTop("0")
+        self._right = EffectRight("0")
+        self._bottom = EffectBottom("0")
 
     @property
     def left(self):
@@ -114,7 +114,7 @@ class EffectExtent(BaseContentTag):
 
     @left.setter
     def left(self, value):
-        self._left.value = Cm(value)
+        self._left.value = value
 
     @property
     def top(self):
@@ -122,7 +122,7 @@ class EffectExtent(BaseContentTag):
 
     @top.setter
     def top(self, value):
-        self._top.value = Cm(value)
+        self._top.value = value
 
     @property
     def right(self):
@@ -130,7 +130,7 @@ class EffectExtent(BaseContentTag):
 
     @right.setter
     def right(self, value):
-        self._right.value = Cm(value)
+        self._right.value = value
 
     @property
     def bottom(self):
@@ -138,7 +138,7 @@ class EffectExtent(BaseContentTag):
 
     @bottom.setter
     def bottom(self, value):
-        self._bottom.value = Cm(value)
+        self._bottom.value = value
 
     @property
     def tag(self):
@@ -1278,10 +1278,10 @@ class SrcRect(BaseContentTag):
     __slots__ = ("_left", "_top", "_right", "_bottom")
 
     def __init__(self):
-        self._left = EffectLeft(Cm(0))
-        self._top = EffectTop(Cm(0))
-        self._right = EffectRight(Cm(0))
-        self._bottom = EffectBottom(Cm(0))
+        self._left = EffectLeft("0")
+        self._top = EffectTop("0")
+        self._right = EffectRight("0")
+        self._bottom = EffectBottom("0")
 
     @property
     def left(self):
@@ -1355,6 +1355,16 @@ class SpPr(BaseContainerTag):
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
+        self._bwMode = BwMode("auto")
+
+
+    @property
+    def bwMode(self):
+        return self._bwMode.value
+
+    @bwMode.setter
+    def bwMode(self, value: str):
+        self._bwMode.value = value
 
     @property
     def tag(self):
@@ -1636,10 +1646,10 @@ class Inline(BaseContainerTag):
 
     def __init__(self, objects: Objects | list = None):
         super().__init__(objects)
-        self._distT = DistTop(0)
-        self._distB = DistBottom(0)
-        self._distL = DistLeft(0)
-        self._distR = DistRight(0)
+        self._distT = DistTop("0")
+        self._distB = DistBottom("0")
+        self._distL = DistLeft("0")
+        self._distR = DistRight("0")
         self._anchorId = AnchorId(self.generate_random_id())
         self._editId = EditId(self.generate_random_id())
 
@@ -1651,7 +1661,7 @@ class Inline(BaseContainerTag):
     def dist_top(self, value):
         """take value in centimeters"""
 
-        self._distT.value = Cm(value)
+        self._distT.value = value
 
     @property
     def dist_bottom(self):
@@ -1661,7 +1671,7 @@ class Inline(BaseContainerTag):
     def dist_bottom(self, value):
         """take value in centimeters"""
 
-        self._distB.value = Cm(value)
+        self._distB.value = value
 
     @property
     def dist_left(self):
@@ -1671,7 +1681,7 @@ class Inline(BaseContainerTag):
     def dist_left(self, value):
         """take value in centimeters"""
 
-        self._distL.value = Cm(value)
+        self._distL.value = value
 
     @property
     def dist_right(self):
@@ -1681,7 +1691,7 @@ class Inline(BaseContainerTag):
     def dist_right(self, value):
         """take value in centimeters"""
 
-        self._distR.value = Cm(value)
+        self._distR.value = value
 
     @property
     def anchor_id(self):

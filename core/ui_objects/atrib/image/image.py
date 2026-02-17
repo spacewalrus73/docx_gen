@@ -5,7 +5,7 @@ from enum import Enum
 class ImageHidden(EnumAttribute):
 
     def __init__(self, value: "ImageHidden.Options"):
-        super().__init__(value=value, xml_name="hidden")
+        super().__init__(value=value, xml_name="wp:hidden")
 
     class Options(Enum):
         hidden = "1"
@@ -14,22 +14,22 @@ class ImageHidden(EnumAttribute):
 
 class ImageId(SimpleAttribute):
     def __init__(self, value: str):
-        super().__init__(value=value, xml_name="id")
+        super().__init__(value=value, xml_name="wp:id")
 
 
 class ImageName(SimpleAttribute):
     def __init__(self, value: str):
-        super().__init__(value=value, xml_name="name")
+        super().__init__(value=value, xml_name="wp:name")
 
 
 class ImageDescr(SimpleAttribute):
     def __init__(self, value: str):
-        super().__init__(value=value, xml_name="descr")
+        super().__init__(value=value, xml_name="wp:descr")
 
 
 class ImageTitle(SimpleAttribute):
     def __init__(self, value: str):
-        super().__init__(value=value, xml_name="title")
+        super().__init__(value=value, xml_name="wp:title")
 
 
 
@@ -44,25 +44,25 @@ class URIGraphicData(SimpleAttribute):
     #     ink = "http://schemas.microsoft.com/office/drawing/2016/ink"
 
     def __init__(self, value: str):
-        super().__init__(value=value, xml_name="uri")
+        super().__init__(value=value, xml_name="a:uri")
 
 
 class URIExt(SimpleAttribute):
     def __init__(self, value: str = ""):
-        super().__init__(value=value, xml_name="uri")
+        super().__init__(value=value, xml_name="a:uri")
 
 class Dpi(SimpleAttribute):
     """DPI для fillRect (0 = использовать системный DPI)"""
 
     def __init__(self, value: str = "0"):
-        super().__init__(value=value, xml_name="dpi")
+        super().__init__(value=value, xml_name="pic:dpi")
 
 
 class UseLocalDpiVal(EnumAttribute):
     """Значение для useLocalDpi"""
 
     def __init__(self, value: "UseLocalDpiVal.Options"):
-        super().__init__(value=value, xml_name="val")
+        super().__init__(value=value, xml_name="a14:val")
 
     class Options(Enum):
         use_system = "0"  # Использовать системный DPI

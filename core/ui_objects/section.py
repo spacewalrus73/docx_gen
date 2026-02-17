@@ -12,9 +12,9 @@ from core.ui_objects.run import Run
 class PageSize(BaseContentTag):
     __slots__ = ("_width", "_height")
 
-    def __init__(self, width: int = 12240, height: int = 15840):
-        self._width = Width(width)
-        self._height = Height(height)
+    def __init__(self,):
+        self._width = Width("12240")
+        self._height = Height("15840")
 
     @property
     def width(self):
@@ -40,23 +40,14 @@ class PageSize(BaseContentTag):
 class PageMargin(BaseContentTag):
     __slots__ = ("_top", "_right", "_bottom", "_left", "_header", "_footer", "_gutter")
 
-    def __init__(
-            self,
-            top: int = 1440,
-            right: int = 1800,
-            bottom: int = 1440,
-            left: int = 1800,
-            header: int = 720,
-            footer: int = 720,
-            gutter: int = 0,
-    ):
-        self._top = Top(top)
-        self._right = Right(right)
-        self._bottom = Bottom(bottom)
-        self._left = Left(left)
-        self._header = Header(header)
-        self._footer = Footer(footer)
-        self._gutter = Gutter(gutter)
+    def __init__(self):
+        self._top = Top("1440")
+        self._right = Right("1800")
+        self._bottom = Bottom("1440")
+        self._left = Left("1800")
+        self._header = Header("720")
+        self._footer = Footer("720")
+        self._gutter = Gutter("0")
 
     # Top
     @property
@@ -129,7 +120,7 @@ class PageMargin(BaseContentTag):
 class Cols(BaseContentTag):
     __slots__ = ("_space",)
 
-    def __init__(self, space: int = 720):
+    def __init__(self, space: str = "720"):
         self._space = Space(space)
 
     @property
@@ -148,7 +139,7 @@ class Cols(BaseContentTag):
 class DocGrid(BaseContentTag):
     __slots__ = ("_line_pitch",)
 
-    def __init__(self, line_pitch: int = 360):
+    def __init__(self, line_pitch: str = "360"):
         self._line_pitch = LinePitch(line_pitch)
 
     @property

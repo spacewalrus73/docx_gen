@@ -20,6 +20,8 @@ def get_cls_by_tag(tag: str):
 
 
 def make_xml_tree(cls_element: BaseTag) -> etree.Element:
+    print(cls_element, "^^^^^^^^^^", (qn(cls_element.tag), cls_element.attrs, nsmap))
+
     xml_tree = etree.Element(qn(cls_element.tag), attrib=cls_element.attrs, nsmap=nsmap)
     if isinstance(cls_element, BaseContainerTag):
         if isinstance(cls_element, Section):
@@ -40,14 +42,15 @@ def make_xml_tree(cls_element: BaseTag) -> etree.Element:
 
     return xml_tree
 
-
+from core.oxml_magic.xml_object import find_name_attr
 def declare_attrib(xml_elem: etree._Element, cls_obj: BaseTag):
     for attr, val in xml_elem.attrib.items():
+        if ":" not in attr:
+            attr = cls_obj.tag.split(":")[0] + f":{attr}" # takes tag prefix
+        attr_name = find_name_attr(cls_obj, attr)
         print(attr, "3333333333")
-        qn_attr = NamespacePrefixedTag.from_clark_name(attr)
-        attr_name = qn_attr.split(":")[1] if ":" in qn_attr else qn_attr
-
-        if hasattr(cls_obj, attr_name):
+        if attr_name is not None and attr_name.startswith("_"):
+            attr_name = attr_name[1:]
             property_attr = getattr(type(cls_obj), attr_name)
             property_attr.__set__(cls_obj, val)
 
