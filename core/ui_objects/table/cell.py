@@ -1,4 +1,6 @@
+from core.ui_objects import Objects
 from core.ui_objects.base.base_container_tag import BaseContainerTag
+from core.ui_objects.base.linked_objects import Property
 from core.ui_objects.paragraph import Paragraph
 
 
@@ -7,6 +9,13 @@ class TableCellProperty(BaseContainerTag):
 
 
 class TableCell(BaseContainerTag):
+    def __init__(
+        self,
+        objects: Objects | list = None,
+        property: Property | list = None,
+    ):
+        super().__init__(objects=objects, property=property)
+
     @property
     def tag(self) -> str:
         return "w:tc"
