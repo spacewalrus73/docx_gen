@@ -1,6 +1,7 @@
 from typing import IO
 
 from core.ui_objects.atrib.ignorable import Ignorable
+from core.ui_objects.table.table import Table
 from core.utils.constants import DOC_DEFAULT_PATH
 from core.writer.recording_tools import create_docx, docx_to_xml
 from core.ui_objects.base.base_container_tag import BaseContainerTag
@@ -21,7 +22,7 @@ class Body(BaseContainerTag):
 
     @property
     def access_children(self):
-        return [{"class": Section}, {"class": Paragraph}]
+        return [{"class": Section}, {"class": Paragraph}, {"class": Table}]
 
     @property
     def access_property(self) -> list[dict]:
