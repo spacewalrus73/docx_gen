@@ -38,10 +38,10 @@ class Table(BaseContainerTag):
         return [{"class": TableProperty, "required_position": 0}]
 
     def _create_table(self):
-        self._create_columns()
+        self._create_table_grid()
         self._create_rows()
 
-    def _create_columns(self):
+    def _create_table_grid(self):
         self.objects.append(
             TableGrid(columns_count=self.columns, block_width=self.block_width)
         )
