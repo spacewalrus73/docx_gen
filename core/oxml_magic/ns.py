@@ -42,7 +42,6 @@ class NamespacePrefixedTag(str):
 
     def __init__(self, nstag: str):
         self._pfx, self._local_part = nstag.split(":")
-        print(self._local_part, "5555555555555")
         self._ns_uri = nsmap[self._pfx]
 
     @property
@@ -64,7 +63,6 @@ def qn(tag: str) -> str:
     "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}p".
     """
     prefix, tagroot = tag.split(":")
-    print(tag,"****************")
     uri = nsmap[prefix]
     return f"{{{uri}}}{tagroot}"
 

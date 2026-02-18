@@ -20,8 +20,6 @@ def get_cls_by_tag(tag: str):
 
 
 def make_xml_tree(cls_element: BaseTag) -> etree.Element:
-    print(cls_element, "^^^^^^^^^^", (qn(cls_element.tag), cls_element.attrs, nsmap))
-
     xml_tree = etree.Element(qn(cls_element.tag), attrib=cls_element.attrs, nsmap=nsmap)
     if isinstance(cls_element, BaseContainerTag):
         if isinstance(cls_element, Section):
@@ -48,7 +46,6 @@ def declare_attrib(xml_elem: etree._Element, cls_obj: BaseTag):
         if ":" not in attr:
             attr = cls_obj.tag.split(":")[0] + f":{attr}" # takes tag prefix
         attr_name = find_name_attr(cls_obj, attr)
-        print(attr, "3333333333")
         if attr_name is not None and attr_name.startswith("_"):
             attr_name = attr_name[1:]
             property_attr = getattr(type(cls_obj), attr_name)
@@ -56,9 +53,7 @@ def declare_attrib(xml_elem: etree._Element, cls_obj: BaseTag):
 
 
 def read_xml_markup(xml_tree: etree.ElementBase):
-    print(NamespacePrefixedTag.from_clark_name(xml_tree.tag), "11111111111")
     tag = get_cls_by_tag(NamespacePrefixedTag.from_clark_name(xml_tree.tag))
-    print(tag, "2222222222")
     if not tag:
         warnings.warn(f"{xml_tree} object is not readable", stacklevel=2)
         return None
@@ -84,7 +79,6 @@ def read_xml_markup(xml_tree: etree.ElementBase):
                 position = access_property[0].get("required_position") or 0
                 obj.property.insert(position, cls_object)
             else:
-                print(obj, "444444444")
                 obj.objects.append(cls_object)
     return obj
 
