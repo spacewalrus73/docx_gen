@@ -136,8 +136,7 @@ class Cols(BaseContentTag):
     __slots__ = ("_space",)
 
     def __init__(self, space: Twips = None):
-        space = space if space else COLUMN_GAP
-        self._space = Space(space)
+        self._space = Space(space if space else COLUMN_GAP)
 
     @property
     def space(self):

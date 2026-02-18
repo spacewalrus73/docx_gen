@@ -25,6 +25,8 @@ nsmap = {
     "xml": "http://www.w3.org/XML/1998/namespace",
     "xsi": "http://www.w3.org/2001/XMLSchema-instance",
     "mc": "http://schemas.openxmlformats.org/markup-compatibility/2006",
+    "uri": "http://schemas.microsoft.com/office/drawing/2010/main",
+    "xmlns": "http://schemas.openxmlformats.org/drawingml/2006/main",
 }
 
 pfxmap = {value: key for key, value in nsmap.items()}
@@ -49,58 +51,7 @@ class NamespacePrefixedTag(str):
     @classmethod
     def from_clark_name(cls, clark_name: str) -> NamespacePrefixedTag:
         nsuri, local_name = clark_name[1:].split("}")
-        nstag = f"{pfxmap[nsuri]}:{local_name}"
-        return cls(nstag)
-
-    @property
-    def local_part(self) -> str:
-        """The local part of this tag.
-
-        E.g. "foobar" is returned for tag "f:foobar".
-        """
-        return self._local_part
-
-    @property
-    def nsmap(self) -> dict[str, str]:
-        """Single-member dict mapping prefix of this tag to it's namespace name.
-
-        Example: `{"f": "http://foo/bar"}`. This is handy for passing to xpath calls
-        and other uses.
-        """
-        return {self._pfx: self._ns_uri}
-
-    @property
-    def nspfx(self) -> str:
-        """The namespace-prefix for this tag.
-
-        For example, "f" is returned for tag "f:foobar".
-        """
-        return self._pfx
-
-    @property
-    def nsuri(self) -> str:
-        """The namespace URI for this tag.
-
-        For example, "http://foo/bar" would be returned for tag "f:foobar" if the "f"
-        prefix maps to "http://foo/bar" in nsmap.
-        """
-        return self._ns_uri
-
-
-def nsdecls(*prefixes: str) -> str:
-    """Namespace declaration including each namespace-prefix in `prefixes`.
-
-    Handy for adding required namespace declarations to a tree root element.
-    """
-    return " ".join(f'xmlns:{pfx}="{nsmap[pfx]}"' for pfx in prefixes)
-
-
-def nspfxmap(*nspfxs: str) -> dict[str, str]:
-    """Subset namespace-prefix mappings specified by *nspfxs*.
-
-    Any number of namespace prefixes can be supplied, e.g. namespaces("a", "r", "p").
-    """
-    return {pfx: nsmap[pfx] for pfx in nspfxs}
+        return cls(f"{pfxmap[nsuri]}:{local_name}")
 
 
 def qn(tag: str) -> str:
@@ -113,11 +64,6 @@ def qn(tag: str) -> str:
     prefix, tagroot = tag.split(":")
     uri = nsmap[prefix]
     return f"{{{uri}}}{tagroot}"
-
-
-# def find_qn(collection: dict[str, str]):
-#     items = list(filter(lambda x: qn_pattern.match(x.keys()), collection))
-#     return re.findall(qn_pattern, collection)
 
 
 class XmlString(str):

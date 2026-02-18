@@ -3,7 +3,6 @@ from core.ui_objects.document import Document
 # from core.ui_objects.paragraph import Paragraph
 from core.ui_objects.table.table import Table
 from core.writer.recording_tools import create_docx2
-
 # from core.ui_objects import Section
 # from core.writer.recording_tools import create_docx2, create_docx
 
@@ -52,3 +51,14 @@ xml = """<w:document xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/m
 
 
 create_docx2(xml, "jepa.docx")
+#
+# from core.ui_objects import CLASS_REGISTRY
+# print(CLASS_REGISTRY)
+#
+#
+# from core.oxml_magic.parser import make_xml_tree, to_xml_str
+#
+# doc = Document("image_word.docx")
+#
+# tree = make_xml_tree(doc)
+# print(to_xml_str(tree))
