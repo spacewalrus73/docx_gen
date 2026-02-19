@@ -1,5 +1,4 @@
-from core.ui_objects.base.base_attribute import SimpleAttribute, EnumAttribute
-from enum import Enum
+from core.ui_objects.base.base_attribute import SimpleAttribute
 
 
 class LineWidth(SimpleAttribute):

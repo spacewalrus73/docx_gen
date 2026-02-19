@@ -1,7 +1,4 @@
-from core.ui_objects.base.base_attribute import EnumAttribute, SimpleAttribute
-from enum import Enum
-
-from enum import Enum
+from core.ui_objects.base.base_attribute import SimpleAttribute
 
 
 class Prst(SimpleAttribute):
@@ -13,7 +10,8 @@ class Prst(SimpleAttribute):
     #     roundRect = "roundRect"  # Прямоугольник со скругленными углами
     #     snip1Rect = "snip1Rect"  # Прямоугольник с одним срезанным углом
     #     snip2Rect = "snip2Rect"  # Прямоугольник с двумя срезанными углами
-    #     snipRoundRect = "snipRoundRect"  # Прямоугольник со скругленными и срезанными углами
+    #     snipRoundRect = "snipRoundRect"  # Прямоугольник со скругленными и срезанными
+    #     углами
     #     frame = "frame"  # Рамка
     #     halfFrame = "halfFrame"  # Полурамка
     #
@@ -68,7 +66,8 @@ class Prst(SimpleAttribute):
     #     # Круговые стрелки
     #     circularArrow = "circularArrow"  # Круговая стрелка
     #     leftCircularArrow = "leftCircularArrow"  # Левая круговая стрелка
-    #     leftRightCircularArrow = "leftRightCircularArrow"  # Двусторонняя круговая стрелка
+    #     leftRightCircularArrow = "leftRightCircularArrow"  # Двусторонняя круговая
+    #     стрелка
     #     curvedRightArrow = "curvedRightArrow"  # Изогнутая стрелка вправо
     #     curvedLeftArrow = "curvedLeftArrow"  # Изогнутая стрелка влево
     #     curvedUpArrow = "curvedUpArrow"  # Изогнутая стрелка вверх
@@ -78,7 +77,8 @@ class Prst(SimpleAttribute):
     #     flowChartProcess = "flowChartProcess"  # Процесс
     #     flowChartDecision = "flowChartDecision"  # Решение
     #     flowChartInputOutput = "flowChartInputOutput"  # Ввод/вывод
-    #     flowChartPredefinedProcess = "flowChartPredefinedProcess"  # Предопределенный процесс
+    #     flowChartPredefinedProcess = "flowChartPredefinedProcess"  # Предопределенный
+    #     процесс
     #     flowChartInternalStorage = "flowChartInternalStorage"  # Внутреннее хранилище
     #     flowChartDocument = "flowChartDocument"  # Документ
     #     flowChartMultidocument = "flowChartMultidocument"  # Множество документов
@@ -87,7 +87,8 @@ class Prst(SimpleAttribute):
     #     flowChartManualInput = "flowChartManualInput"  # Ручной ввод
     #     flowChartManualOperation = "flowChartManualOperation"  # Ручная операция
     #     flowChartConnector = "flowChartConnector"  # Соединитель
-    #     flowChartOffpageConnector = "flowChartOffpageConnector"  # Соединитель на другую страницу
+    #     flowChartOffpageConnector = "flowChartOffpageConnector"  # Соединитель на
+    #     другую страницу
     #     flowChartPunchedCard = "flowChartPunchedCard"  # Перфокарта
     #     flowChartPunchedTape = "flowChartPunchedTape"  # Перфолента
     #     flowChartSummingJunction = "flowChartSummingJunction"  # Суммирующий переход
@@ -130,7 +131,8 @@ class Prst(SimpleAttribute):
     #
     #     # ========== ВЫНОСКИ ==========
     #     wedgeRectCallout = "wedgeRectCallout"  # Прямоугольная выноска
-    #     wedgeRoundRectCallout = "wedgeRoundRectCallout"  # Выноска со скругленными углами
+    #     wedgeRoundRectCallout = "wedgeRoundRectCallout"  # Выноска со скругленными
+    #     углами
     #     wedgeEllipseCallout = "wedgeEllipseCallout"  # Овальная выноска
     #     cloudCallout = "cloudCallout"  # Облачная выноска
     #     lineCallout1 = "lineCallout1"  # Линейная выноска 1
@@ -160,8 +162,10 @@ class Prst(SimpleAttribute):
     #     squareTabs = "squareTabs"  # Квадратные вкладки
     #     plaqueTabs = "plaqueTabs"  # Плакетки-вкладки
     #     round1Rect = "round1Rect"  # Прямоугольник с одним скругленным углом
-    #     round2SameRect = "round2SameRect"  # Прямоугольник с двумя одинаково скругленными углами
-    #     round2DiagRect = "round2DiagRect"  # Прямоугольник с диагонально скругленными углами
+    #     round2SameRect = "round2SameRect"  # Прямоугольник с двумя одинаково
+    #     скругленными углами
+    #     round2DiagRect = "round2DiagRect"  # Прямоугольник с диагонально скругленными
+    #     углами
     #
     #     # ========== СПЕЦИАЛЬНЫЕ СИМВОЛЫ ==========
     #     noSmoking = "noSmoking"  # Знак "Не курить"
@@ -229,9 +233,12 @@ class Prst(SimpleAttribute):
     #     textPlain = "textPlain"  # Простой текстовый блок
     #     textStop = "textStop"  # Текстовый блок "Стоп"
     #     textTriangle = "textTriangle"  # Треугольный текстовый блок
-    #     textTriangleInverted = "textTriangleInverted"  # Инвертированный треугольный текстовый блок
+
+    #     textTriangleInverted = "textTriangleInverted"  # Инвертированный треугольный
+    #     текстовый блок
     #     textChevron = "textChevron"  # Текстовый блок-шеврон
-    #     textChevronInverted = "textChevronInverted"  # Инвертированный текстовый блок-шеврон
+    #     textChevronInverted = "textChevronInverted"  # Инвертированный текстовый
+    #     блок-шеврон
     #     textRing = "textRing"  # Кольцевой текстовый блок
     #     textWave = "textWave"  # Волнообразный текстовый блок
     #     textFade = "textFade"  # Текстовый блок с затуханием
